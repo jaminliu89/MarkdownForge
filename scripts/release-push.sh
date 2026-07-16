@@ -97,18 +97,48 @@ if [ -n "$REPO_GITEE" ]; then
   echo ""
   if [ -n "$GITEE_TOKEN" ]; then
     echo "→ Gitee Release + DMG（REST API）..."
-    BODY=$(python3 -c "import json,sys; print(json.dumps(open('$NOTES').read()))")
-    RESP=$(curl -s -X POST "https://gitee.com/api/v5/repos/$REPO_GITEE/releases" \
-      -H "Content-Type: application/json" \
-      -d "{\"access_token\":\"$GITEE_TOKEN\",\"tag_name\":\"$TAG\",\"name\":\"$TAG\",\"body\":$BODY,\"target_commitish\":\"main\"}")
-    REL_ID=$(echo "$RESP" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id','null'))" 2>/dev/null || echo "null")
+    DMG_NAME=$(basename "$DMG")
+
+    # 先看这个 tag 有没有已存在的 release（幂等：重跑同一个 tag 不报错）
+    EXISTING=$(curl -s "https://gitee.com/api/v5/repos/$REPO_GITEE/releases/tags/$TAG?access_token=$GITEE_TOKEN")
+    REL_ID=$(echo "$EXISTING" | python3 -c "import json,sys
+try:
+  d = json.load(sys.stdin)
+  print(d.get('id','null') if isinstance(d, dict) and 'id' in d else 'null')
+except: print('null')" 2>/dev/null || echo "null")
+
     if [ "$REL_ID" != "null" ] && [ -n "$REL_ID" ]; then
-      curl -s -X POST "https://gitee.com/api/v5/repos/$REPO_GITEE/releases/$REL_ID/attach_files" \
-        -F "access_token=$GITEE_TOKEN" -F "file=@$DMG" > /dev/null
+      echo "  · Release 已存在 (id=$REL_ID)，检查附件..."
+      HAS_DMG=$(echo "$EXISTING" | python3 -c "import json,sys
+try:
+  d = json.load(sys.stdin)
+  names = [a.get('name','') for a in d.get('assets', [])]
+  print('yes' if '$DMG_NAME' in names else 'no')
+except: print('no')")
+      if [ "$HAS_DMG" = "yes" ]; then
+        echo "  ✓ DMG 已挂在 Release 上，跳过上传"
+      else
+        echo "  · 上传 DMG..."
+        curl -s -X POST "https://gitee.com/api/v5/repos/$REPO_GITEE/releases/$REL_ID/attach_files" \
+          -F "access_token=$GITEE_TOKEN" -F "file=@$DMG" > /dev/null
+        echo "  ✓ DMG 已追加"
+      fi
       echo "  ✓ https://gitee.com/$REPO_GITEE/releases/tag/$TAG"
     else
-      echo "  ✗ Gitee Release 建失败，Response: $RESP"
-      echo "  兜底: https://gitee.com/$REPO_GITEE/releases/new?tag=$TAG"
+      # 没有则新建
+      BODY=$(python3 -c "import json,sys; print(json.dumps(open('$NOTES').read()))")
+      RESP=$(curl -s -X POST "https://gitee.com/api/v5/repos/$REPO_GITEE/releases" \
+        -H "Content-Type: application/json" \
+        -d "{\"access_token\":\"$GITEE_TOKEN\",\"tag_name\":\"$TAG\",\"name\":\"$TAG\",\"body\":$BODY,\"target_commitish\":\"main\"}")
+      REL_ID=$(echo "$RESP" | python3 -c "import json,sys; d=json.load(sys.stdin); print(d.get('id','null'))" 2>/dev/null || echo "null")
+      if [ "$REL_ID" != "null" ] && [ -n "$REL_ID" ]; then
+        curl -s -X POST "https://gitee.com/api/v5/repos/$REPO_GITEE/releases/$REL_ID/attach_files" \
+          -F "access_token=$GITEE_TOKEN" -F "file=@$DMG" > /dev/null
+        echo "  ✓ https://gitee.com/$REPO_GITEE/releases/tag/$TAG"
+      else
+        echo "  ✗ Gitee Release 建失败，Response: $RESP"
+        echo "  兜底: https://gitee.com/$REPO_GITEE/releases/new?tag=$TAG"
+      fi
     fi
   else
     echo "→ Gitee: 未设 GITEE_TOKEN，走网页兜底"
