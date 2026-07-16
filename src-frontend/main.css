@@ -41,11 +41,10 @@
   button.primary:hover { background: #333; }
   main {
     flex: 1;
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    gap: 1px;
+    display: flex;
     background: #e5e5e7;
     overflow: hidden;
+    --split: 50%;
   }
   .pane {
     background: #fff;
@@ -53,7 +52,34 @@
     flex-direction: column;
     overflow: hidden;
     min-width: 0;
+    flex: 1 1 0;
   }
+  .pane[data-pane="input"] { flex: 0 0 var(--split); }
+  .pane[data-pane="preview"] { flex: 1 1 0; }
+  .divider {
+    flex: 0 0 6px;
+    background: #e5e5e7;
+    cursor: col-resize;
+    position: relative;
+    transition: background 120ms;
+    user-select: none;
+  }
+  .divider::before {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 2px;
+    height: 32px;
+    background: #c8c8cc;
+    border-radius: 1px;
+    transition: background 120ms;
+  }
+  .divider:hover, .divider.dragging { background: #d0d0d3; }
+  .divider:hover::before, .divider.dragging::before { background: #888; }
+  body.divider-dragging { cursor: col-resize !important; user-select: none; }
+  body.divider-dragging * { pointer-events: none; user-select: none; }
   .pane-header {
     padding: 10px 20px;
     background: #fafafa;
@@ -307,8 +333,14 @@
     grid-template-columns: 1fr !important;
   }
   main.focus-input .pane[data-pane="preview"],
-  main.focus-preview .pane[data-pane="input"] {
+  main.focus-preview .pane[data-pane="input"],
+  main.focus-input .divider,
+  main.focus-preview .divider {
     display: none !important;
+  }
+  main.focus-input .pane[data-pane="input"],
+  main.focus-preview .pane[data-pane="preview"] {
+    flex: 1 1 100% !important;
   }
   /* 全屏时预览区内容更宽敞：固定宽度居中 */
   main.focus-preview .pane[data-pane="preview"] {

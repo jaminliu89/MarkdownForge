@@ -9,7 +9,7 @@
 <body>
 <header>
   <h1 class="brand">Markdown 抛光机</h1>
-  <span class="hint">离线运行 · 中文优化排版</span>
+  <span class="hint">小柳 markdown2png · 中文优化排版</span>
   <div class="toolbar">
     <button id="edit-toggle" data-action="toggleEdit" title="切换预览区是否可编辑">✎ 可编辑</button>
     <select id="theme" data-onchange="applyTheme">
@@ -69,6 +69,7 @@
     </div>
     <textarea id="input" spellcheck="false" placeholder="把 Markdown 粘贴到这里……"></textarea>
   </div>
+  <div class="divider" id="divider" title="拖动调整左右宽度 · 双击重置" role="separator" aria-orientation="vertical" tabindex="0"></div>
   <div class="pane" data-pane="preview">
     <div class="pane-header">
       <span>精美预览</span>

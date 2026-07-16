@@ -67,6 +67,43 @@ async fn save_blob_base64(
     }
 }
 
+
+#[tauri::command]
+fn smoketest_save_png(b64_data: String, w: u32, h: u32, expected_h: u32) -> Result<(), String> {
+    write_debug(&format!("[SMOKE][RUST] save_png w={} h={} expected_h={} b64_len={}", w, h, expected_h, b64_data.len()));
+    let bytes = B64.decode(b64_data).map_err(|e| e.to_string())?;
+    std::fs::write("/tmp/mfsmoke.png", bytes).map_err(|e| e.to_string())?;
+    write_debug("[SMOKE][RUST] wrote /tmp/mfsmoke.png");
+    Ok(())
+}
+
+#[tauri::command]
+fn smoketest_done(app: tauri::AppHandle) {
+    write_debug("[SMOKE][RUST] done, exiting");
+    app.exit(0);
+}
+
+#[tauri::command]
+fn e2e_write_result(json: String) -> Result<(), String> {
+    std::fs::write("/tmp/mf-e2e.json", json).map_err(|e| e.to_string())
+}
+
+#[tauri::command]
+fn e2e_done(app: tauri::AppHandle) {
+    write_debug("[E2E][RUST] done, exiting");
+    app.exit(0);
+}
+
+#[tauri::command]
+fn read_text_file(path: String) -> Result<String, String> {
+    // 限制单文件 5MB，防止误拖大文件把内存打爆
+    let meta = std::fs::metadata(&path).map_err(|e| e.to_string())?;
+    if meta.len() > 5 * 1024 * 1024 {
+        return Err(format!("文件超过 5MB: {} ({} bytes)", path, meta.len()));
+    }
+    std::fs::read_to_string(&path).map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -74,7 +111,7 @@ pub fn run() {
         .plugin(tauri_plugin_dialog::init())
         .plugin(tauri_plugin_fs::init())
         .plugin(tauri_plugin_global_shortcut::Builder::new().build())
-        .invoke_handler(tauri::generate_handler![save_blob_base64, debug_log])
+        .invoke_handler(tauri::generate_handler![save_blob_base64, debug_log, smoketest_save_png, smoketest_done, read_text_file, e2e_write_result, e2e_done])
         .setup(|app| {
             #[cfg(desktop)]
             {
@@ -97,6 +134,33 @@ pub fn run() {
                         }
                     })
                     .ok();
+            }
+            // Smoketest 触发
+            if std::env::var("MF_SMOKETEST").ok().as_deref() == Some("1") {
+                write_debug("[SMOKE][RUST] MF_SMOKETEST=1, will eval trigger");
+                let handle = app.handle().clone();
+                std::thread::spawn(move || {
+                    // 等 webview ready
+                    std::thread::sleep(std::time::Duration::from_millis(1500));
+                    if let Some(win) = handle.get_webview_window("main") {
+                        let _ = win.eval("window.__mfSmoketest && window.__mfSmoketest();");
+                        write_debug("[SMOKE][RUST] eval dispatched");
+                    } else {
+                        write_debug("[SMOKE][RUST] no main window!");
+                    }
+                });
+            }
+            // E2E 触发（覆盖 v1.0.3 所有新功能）
+            if std::env::var("MF_E2E").ok().as_deref() == Some("1") {
+                write_debug("[E2E][RUST] MF_E2E=1, will eval trigger");
+                let handle = app.handle().clone();
+                std::thread::spawn(move || {
+                    std::thread::sleep(std::time::Duration::from_millis(1500));
+                    if let Some(win) = handle.get_webview_window("main") {
+                        let _ = win.eval("window.__mfE2E && window.__mfE2E();");
+                        write_debug("[E2E][RUST] eval dispatched");
+                    }
+                });
             }
             Ok(())
         })

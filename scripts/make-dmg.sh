@@ -28,10 +28,12 @@ done
 mkdir -p "$OUT_DIR"
 rm -f "$OUT_DMG"
 
-# 清残留卷
-for m in "/Volumes/MarkdownForge"*; do
+# 清残留卷（含 create-dmg 自己产生的 dmg.* 临时卷）
+for m in /Volumes/MarkdownForge* /Volumes/dmg.*; do
   [ -d "$m" ] && hdiutil detach "$m" -force >/dev/null 2>&1 || true
 done
+# 清老 rw.*.dmg 中间产物
+find "$OUT_DIR" -name "rw.*.dmg" -delete 2>/dev/null || true
 
 # 准备临时暂存目录（含 .app + 使用说明.pdf）
 STAGE=$(mktemp -d)
@@ -44,6 +46,9 @@ echo "  app: $(du -sh "$APP" | awk '{print $1}')  manual: $(du -sh "$MANUAL" | a
 
 # create-dmg 参数：
 #   1000x600 视图 / 拖入 Applications / 说明书居下 / 中式背景
+# NOTE: create-dmg 收尾时偶尔卡 "hdiutil detach 资源忙"（Spotlight/Finder 索引占用）
+# 关掉 set -e 单独跑，允许 exit 16 后走兜底
+set +e
 create-dmg \
   --volname "MarkdownForge ${VERSION}" \
   --volicon "$ICON" \
@@ -59,6 +64,27 @@ create-dmg \
   --no-internet-enable \
   "$OUT_DMG" \
   "$STAGE"
+CDR=$?
+set -e
+
+# create-dmg 收尾兜底：若正常产物没生成但 rw 中间产物存在，强制卸挂 + 手动 convert
+if [ ! -f "$OUT_DMG" ]; then
+  RW=$(ls "$OUT_DIR"/rw.*.dmg 2>/dev/null | head -1 || true)
+  if [ -n "$RW" ] && [ -f "$RW" ]; then
+    echo "⚠️ create-dmg 收尾卡住 (exit=$CDR)，走兜底: hdiutil convert"
+    # 强制卸挂所有残留卷
+    for m in /Volumes/MarkdownForge* /Volumes/dmg.*; do
+      [ -d "$m" ] && hdiutil detach "$m" -force >/dev/null 2>&1 || true
+    done
+    sleep 1
+    hdiutil convert "$RW" -format UDZO -imagekey zlib-level=9 -o "$OUT_DMG"
+    rm -f "$RW"
+    echo "✓ 兜底成功"
+  else
+    echo "✗ create-dmg 失败且无 rw.dmg 兜底路径 (exit=$CDR)"
+    exit "$CDR"
+  fi
+fi
 
 echo ""
 echo "✓ 完成"
