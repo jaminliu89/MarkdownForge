@@ -1,0 +1,2242 @@
+* { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", "Microsoft YaHei", sans-serif;
+    background: #f5f5f7;
+    color: #1a1a1a;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+  }
+  header {
+    padding: 12px 24px;
+    background: #fff;
+    border-bottom: 1px solid #e5e5e7;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-shrink: 0;
+  }
+  h1.brand {
+    margin: 0;
+    font-size: 15px;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+  }
+  .hint { color: #999; font-size: 12px; }
+  .toolbar { margin-left: auto; display: flex; gap: 8px; align-items: center; }
+  button, select {
+    padding: 6px 14px;
+    font-size: 13px;
+    border: 1px solid #d0d0d3;
+    background: #fff;
+    border-radius: 6px;
+    cursor: pointer;
+    color: #333;
+    font-family: inherit;
+  }
+  button:hover { background: #f0f0f2; }
+  button.primary { background: #1a1a1a; color: #fff; border-color: #1a1a1a; }
+  button.primary:hover { background: #333; }
+  main {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    background: #e5e5e7;
+    overflow: hidden;
+  }
+  .pane {
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    min-width: 0;
+  }
+  .pane-header {
+    padding: 10px 20px;
+    background: #fafafa;
+    border-bottom: 1px solid #eee;
+    font-size: 12px;
+    color: #666;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  #input {
+    flex: 1;
+    padding: 20px 24px;
+    border: none;
+    outline: none;
+    resize: none;
+    font-family: "SF Mono", "JetBrains Mono", Menlo, "Sarasa Mono SC", monospace;
+    font-size: 14px;
+    line-height: 1.7;
+    color: #333;
+    overflow-y: auto;
+  }
+
+  /* ========= 精美预览区 · 中文优化排版 ========= */
+  #preview {
+    flex: 1;
+    overflow-y: auto;
+    padding: 48px 56px 80px;
+    background: #fff;
+    color: #1f1f1f;
+    font-family: -apple-system, "PingFang SC", "Noto Serif SC", "Source Han Serif SC", "Helvetica Neue", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+    text-rendering: optimizeLegibility;
+    -webkit-font-smoothing: antialiased;
+  }
+  #preview.serif {
+    font-family: "Noto Serif SC", "Source Han Serif SC", "PingFang SC", "SimSun", serif;
+  }
+
+  #preview > *:first-child { margin-top: 0; }
+  #preview > *:last-child { margin-bottom: 0; }
+
+  /* 标题 */
+  #preview h1, #preview h2, #preview h3, #preview h4 {
+    font-weight: 600;
+    line-height: 1.4;
+    color: #111;
+    margin: 1.8em 0 0.8em;
+    letter-spacing: 0.01em;
+  }
+  #preview h1 {
+    font-size: 1.9em;
+    padding-bottom: 0.4em;
+    border-bottom: 1px solid #eaeaea;
+    margin-top: 0.3em;
+  }
+  #preview h2 {
+    font-size: 1.5em;
+    padding-bottom: 0.3em;
+    border-bottom: 1px solid #f0f0f0;
+  }
+  #preview h3 { font-size: 1.22em; }
+  #preview h4 { font-size: 1.08em; }
+  #preview h2::before {
+    content: '';
+    display: inline-block;
+    width: 4px;
+    height: 0.9em;
+    background: #1a1a1a;
+    margin-right: 10px;
+    vertical-align: -0.05em;
+    border-radius: 1px;
+  }
+
+  /* 段落 */
+  #preview p {
+    margin: 1em 0;
+    text-align: justify;
+    text-justify: inter-ideograph;
+    word-break: break-word;
+  }
+
+  /* 加粗 & 斜体 */
+  #preview strong {
+    font-weight: 600;
+    color: #000;
+    /* 中文加粗 = 主色微高亮 */
+    background: linear-gradient(180deg, transparent 65%, rgba(255, 224, 130, 0.55) 65%);
+    padding: 0 1px;
+  }
+  #preview em { font-style: italic; color: #444; }
+
+  /* 链接 */
+  #preview a {
+    color: #0066cc;
+    text-decoration: none;
+    border-bottom: 1px solid rgba(0, 102, 204, 0.25);
+    padding-bottom: 1px;
+    transition: all 0.15s;
+  }
+  #preview a:hover {
+    color: #003d80;
+    border-bottom-color: #003d80;
+  }
+
+  /* 引用块 */
+  #preview blockquote {
+    margin: 1.5em 0;
+    padding: 0.6em 1.2em;
+    border-left: 3px solid #1a1a1a;
+    background: #fafafa;
+    color: #555;
+    font-style: normal;
+    border-radius: 0 4px 4px 0;
+  }
+  #preview blockquote p { margin: 0.5em 0; }
+
+  /* 列表 */
+  #preview ul, #preview ol {
+    margin: 1em 0;
+    padding-left: 1.6em;
+  }
+  #preview li {
+    margin: 0.4em 0;
+    line-height: 1.85;
+  }
+  #preview ul li::marker { color: #999; }
+  #preview ol li::marker { color: #666; font-weight: 600; }
+  #preview li > ul, #preview li > ol { margin: 0.3em 0; }
+
+  /* 代码 */
+  #preview code {
+    font-family: "SF Mono", "JetBrains Mono", Menlo, "Sarasa Mono SC", monospace;
+    background: #f4f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-size: 0.88em;
+    color: #d63384;
+    border: 1px solid #ececee;
+  }
+  #preview pre {
+    margin: 1.4em 0;
+    padding: 18px 22px;
+    background: #1e1e24;
+    border-radius: 8px;
+    overflow-x: auto;
+    line-height: 1.65;
+  }
+  #preview pre code {
+    background: transparent;
+    color: #e4e4e7;
+    padding: 0;
+    border: none;
+    font-size: 0.9em;
+  }
+
+  /* 表格 */
+  #preview table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5em 0;
+    font-size: 0.95em;
+  }
+  #preview thead {
+    border-top: 2px solid #1a1a1a;
+    border-bottom: 1px solid #1a1a1a;
+  }
+  #preview tbody tr {
+    border-bottom: 1px solid #eee;
+  }
+  #preview tbody tr:last-child {
+    border-bottom: 2px solid #1a1a1a;
+  }
+  #preview th, #preview td {
+    padding: 10px 14px;
+    text-align: left;
+  }
+  #preview th {
+    font-weight: 600;
+    color: #111;
+    background: #fafafa;
+  }
+  #preview tbody tr:hover { background: #fcfcfc; }
+
+  /* 分隔线 */
+  #preview hr {
+    border: none;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #ddd, transparent);
+    margin: 2.5em 0;
+  }
+
+  /* 任务列表 */
+  #preview input[type="checkbox"] {
+    margin-right: 6px;
+    accent-color: #1a1a1a;
+  }
+
+  /* 图片 */
+  #preview img {
+    max-width: 100%;
+    border-radius: 6px;
+    display: block;
+    margin: 1em auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  }
+
+  /* 删除线 */
+  #preview del { color: #999; }
+
+  /* Toast */
+  .toast {
+    position: fixed;
+    bottom: 24px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1a1a1a;
+    color: #fff;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 13px;
+    opacity: 0;
+    transition: opacity 0.2s;
+    pointer-events: none;
+    z-index: 100;
+  }
+  .toast.show { opacity: 1; }
+
+  /* ============ 全屏切换样式 ============ */
+  .pane-tools { display: inline-flex; align-items: center; gap: 12px; }
+  .count { color: #888; font-size: 11px; }
+  .icon-btn {
+    background: transparent;
+    border: none;
+    color: #666;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 2px 8px;
+    border-radius: 4px;
+    line-height: 1;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { background: #ececef; color: #000; }
+  .icon-btn.active { background: #1a1a1a; color: #fff; }
+
+  /* 全屏模式：main 变成单列 */
+  main.focus-input, main.focus-preview {
+    grid-template-columns: 1fr !important;
+  }
+  main.focus-input .pane[data-pane="preview"],
+  main.focus-preview .pane[data-pane="input"] {
+    display: none !important;
+  }
+  /* 全屏时预览区内容更宽敞：固定宽度居中 */
+  main.focus-preview .pane[data-pane="preview"] {
+    display: flex !important;
+    justify-content: center;
+    overflow-y: auto;
+  }
+  main.focus-preview #preview {
+    padding: 60px 72px 100px !important;
+    max-width: 760px !important;
+    margin: 0 auto !important;
+    box-sizing: content-box;
+  }
+  main.focus-preview #preview.xuanzhi,
+  main.focus-preview #preview.qingci,
+  main.focus-preview #preview.yanzhi,
+  main.focus-preview #preview.zhuqing,
+  main.focus-preview #preview.muji {
+    padding: 60px 80px 100px !important;
+    max-width: 720px !important;
+  }
+  /* 全屏时输入区更舒适 */
+  main.focus-input .pane[data-pane="input"] {
+    display: flex !important;
+    justify-content: center;
+  }
+  main.focus-input #input {
+    padding: 40px 48px !important;
+    font-size: 15px !important;
+    line-height: 1.85 !important;
+    max-width: 900px !important;
+    margin: 0 auto !important;
+    width: 100%;
+  }
+  /* ESC 快捷键提示 */
+  main.focus-input::before, main.focus-preview::before {
+    content: '按 ESC 退出专注模式';
+    position: fixed;
+    top: 12px;
+    right: 50%;
+    transform: translateX(50%);
+    background: rgba(0,0,0,0.7);
+    color: #fff;
+    padding: 4px 12px;
+    font-size: 11px;
+    border-radius: 4px;
+    z-index: 200;
+    pointer-events: none;
+    animation: fadeOut 3s forwards;
+    animation-delay: 1.5s;
+  }
+  @keyframes fadeOut {
+    to { opacity: 0; }
+  }
+
+  /* 主题选择 */
+  #preview.warm { background: #faf8f3; color: #2c2416; }
+  #preview.warm h1, #preview.warm h2, #preview.warm h3 { color: #1f1a0e; }
+  #preview.warm h2::before { background: #8b6f2f; }
+  #preview.warm blockquote { border-left-color: #8b6f2f; background: #f5f1e6; }
+  #preview.warm strong { background: linear-gradient(180deg, transparent 65%, rgba(212, 175, 55, 0.4) 65%); }
+
+  #preview.dark { background: #1a1a1e; color: #d4d4d8; }
+  #preview.dark h1, #preview.dark h2, #preview.dark h3, #preview.dark h4 { color: #f4f4f5; }
+  #preview.dark h1 { border-bottom-color: #2d2d33; }
+  #preview.dark h2 { border-bottom-color: #26262b; }
+  #preview.dark h2::before { background: #e4e4e7; }
+  #preview.dark strong { color: #fff; background: linear-gradient(180deg, transparent 65%, rgba(255, 200, 100, 0.3) 65%); }
+  #preview.dark blockquote { background: #24242a; border-left-color: #a1a1aa; color: #a1a1aa; }
+  #preview.dark code { background: #2a2a30; color: #f472b6; border-color: #333338; }
+  #preview.dark table thead { border-color: #52525b; }
+  #preview.dark tbody tr { border-bottom-color: #2a2a30; }
+  #preview.dark tbody tr:last-child { border-bottom-color: #52525b; }
+  #preview.dark th { background: #24242a; color: #f4f4f5; }
+  #preview.dark tbody tr:hover { background: #212127; }
+  #preview.dark a { color: #60a5fa; border-bottom-color: rgba(96,165,250,0.3); }
+  #preview.dark hr { background: linear-gradient(90deg, transparent, #3f3f46, transparent); }
+
+  /* ============ 极简主题 · Muji 风 ============ */
+  #preview.muji {
+    background: #fefefe;
+    color: #2a2a2a;
+    font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", sans-serif;
+    font-weight: 300;
+    line-height: 2;
+    letter-spacing: 0.04em;
+  }
+  #preview.muji h1, #preview.muji h2, #preview.muji h3, #preview.muji h4 {
+    font-weight: 400;
+    color: #1a1a1a;
+    letter-spacing: 0.06em;
+  }
+  #preview.muji h1 {
+    font-size: 1.7em;
+    text-align: center;
+    border-bottom: none;
+    padding-bottom: 0;
+    margin: 0.5em 0 1.5em;
+    position: relative;
+  }
+  #preview.muji h1::after {
+    content: '';
+    display: block;
+    width: 40px;
+    height: 1px;
+    background: #999;
+    margin: 20px auto 0;
+  }
+  #preview.muji h2 {
+    font-size: 1.25em;
+    border-bottom: none;
+    padding-bottom: 0;
+    color: #333;
+  }
+  #preview.muji h2::before {
+    background: transparent;
+    color: #aaa;
+    content: '—';
+    width: auto;
+    height: auto;
+    font-weight: 300;
+  }
+  #preview.muji strong {
+    background: none;
+    color: #000;
+    font-weight: 500;
+    border-bottom: 1px solid #333;
+    padding: 0;
+  }
+  #preview.muji blockquote {
+    border-left: none;
+    background: none;
+    color: #666;
+    padding: 0.5em 2em;
+    font-style: normal;
+    position: relative;
+  }
+  #preview.muji blockquote::before {
+    content: '「';
+    position: absolute;
+    left: 0;
+    top: 0;
+    color: #ccc;
+    font-size: 1.6em;
+  }
+  #preview.muji blockquote::after {
+    content: '」';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    color: #ccc;
+    font-size: 1.6em;
+  }
+  #preview.muji hr {
+    background: none;
+    height: auto;
+    text-align: center;
+    border: none;
+  }
+  #preview.muji hr::before {
+    content: '· · ·';
+    color: #bbb;
+    letter-spacing: 0.5em;
+    font-size: 1.2em;
+  }
+  #preview.muji table thead { border-color: #bbb; }
+  #preview.muji tbody tr:last-child { border-bottom-color: #bbb; }
+  #preview.muji code { background: #f7f7f7; color: #555; border: none; }
+  #preview.muji pre { background: #f7f7f7; }
+  #preview.muji pre code { color: #333; }
+
+  /* ============ 中国风 · 宣纸 ============ */
+  #preview.xuanzhi {
+    background:
+      radial-gradient(circle at 20% 30%, rgba(180, 140, 90, 0.04) 0%, transparent 40%),
+      radial-gradient(circle at 80% 70%, rgba(180, 140, 90, 0.03) 0%, transparent 40%),
+      #f6efe0;
+    color: #2b241a;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", "SimSun", serif;
+    line-height: 2;
+    letter-spacing: 0.05em;
+  }
+  #preview.xuanzhi h1, #preview.xuanzhi h2, #preview.xuanzhi h3, #preview.xuanzhi h4 {
+    color: #1a1410;
+    font-weight: 500;
+  }
+  #preview.xuanzhi h1 {
+    font-size: 1.8em;
+    text-align: center;
+    border-bottom: none;
+    padding: 0.4em 0 0.6em;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    position: relative;
+  }
+  #preview.xuanzhi h1::after {
+    content: '❋';
+    display: block;
+    color: #b23a2c;
+    font-size: 0.5em;
+    margin-top: 12px;
+    letter-spacing: 0;
+    text-indent: 0;
+  }
+  #preview.xuanzhi h2 {
+    font-size: 1.35em;
+    border-bottom: 1px solid #d4c7a8;
+    padding-bottom: 0.3em;
+    letter-spacing: 0.15em;
+  }
+  #preview.xuanzhi h2::before {
+    background: #b23a2c;
+    width: 3px;
+  }
+  #preview.xuanzhi h3 {
+    color: #4a3a24;
+    letter-spacing: 0.1em;
+  }
+  #preview.xuanzhi p { text-indent: 2em; }
+  #preview.xuanzhi p:first-of-type { text-indent: 2em; }
+  #preview.xuanzhi ul p, #preview.xuanzhi ol p, #preview.xuanzhi blockquote p,
+  #preview.xuanzhi td p, #preview.xuanzhi th p { text-indent: 0; }
+  #preview.xuanzhi strong {
+    background: none;
+    color: #b23a2c;
+    font-weight: 600;
+    border-bottom: none;
+  }
+  #preview.xuanzhi em { color: #6b5a3a; }
+  #preview.xuanzhi a {
+    color: #8b3a2c;
+    border-bottom: 1px dashed #b23a2c;
+  }
+  #preview.xuanzhi blockquote {
+    background: rgba(178, 58, 44, 0.04);
+    border-left: 3px double #b23a2c;
+    color: #4a3a24;
+    font-family: "Songti SC", "Noto Serif SC", serif;
+    padding: 0.8em 1.5em;
+  }
+  #preview.xuanzhi blockquote p { text-indent: 0; }
+  #preview.xuanzhi hr {
+    background: none;
+    height: auto;
+    text-align: center;
+    border: none;
+  }
+  #preview.xuanzhi hr::before {
+    content: '❈  ❈  ❈';
+    color: #b23a2c;
+    letter-spacing: 0.5em;
+    font-size: 0.9em;
+    opacity: 0.7;
+  }
+  #preview.xuanzhi table thead {
+    border-top: 2px solid #4a3a24;
+    border-bottom: 1px solid #4a3a24;
+  }
+  #preview.xuanzhi tbody tr { border-bottom-color: #d4c7a8; }
+  #preview.xuanzhi tbody tr:last-child { border-bottom: 2px solid #4a3a24; }
+  #preview.xuanzhi th { background: rgba(180, 140, 90, 0.1); color: #1a1410; }
+  #preview.xuanzhi tbody tr:hover { background: rgba(180, 140, 90, 0.06); }
+  #preview.xuanzhi code {
+    background: rgba(180, 140, 90, 0.12);
+    color: #8b3a2c;
+    border: none;
+    font-family: "Songti SC", monospace;
+  }
+  #preview.xuanzhi pre { background: #2c2418; }
+  #preview.xuanzhi pre code { color: #e6d9b8; }
+  #preview.xuanzhi ul li::marker { color: #b23a2c; }
+  #preview.xuanzhi ol li::marker { color: #8b3a2c; }
+
+  /* ============ 中国风 · 青瓷 ============ */
+  #preview.qingci {
+    background: linear-gradient(180deg, #f1f5f2 0%, #e8ede9 100%);
+    color: #2c3a34;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    line-height: 1.95;
+    letter-spacing: 0.04em;
+  }
+  #preview.qingci h1, #preview.qingci h2, #preview.qingci h3 {
+    color: #1a2a24;
+    font-weight: 500;
+  }
+  #preview.qingci h1 {
+    font-size: 1.75em;
+    text-align: center;
+    border-bottom: none;
+    letter-spacing: 0.25em;
+    text-indent: 0.25em;
+    padding-bottom: 0.6em;
+    position: relative;
+  }
+  #preview.qingci h1::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, #7a9788, transparent);
+    margin: 12px auto 0;
+  }
+  #preview.qingci h2 {
+    font-size: 1.32em;
+    border-bottom: 1px solid #c4d1c8;
+    letter-spacing: 0.12em;
+  }
+  #preview.qingci h2::before { background: #5a7a68; }
+  #preview.qingci strong {
+    background: none;
+    color: #3a5a48;
+    font-weight: 600;
+    border-bottom: 1px dotted #7a9788;
+  }
+  #preview.qingci a { color: #3a5a48; border-bottom-color: #7a9788; }
+  #preview.qingci blockquote {
+    background: rgba(122, 151, 136, 0.1);
+    border-left: 3px solid #5a7a68;
+    color: #3a4a44;
+    padding: 0.7em 1.4em;
+  }
+  #preview.qingci hr {
+    background: none;
+    height: auto;
+    text-align: center;
+    border: none;
+  }
+  #preview.qingci hr::before {
+    content: '◈';
+    color: #7a9788;
+    letter-spacing: 1em;
+    font-size: 1em;
+  }
+  #preview.qingci table thead {
+    border-top: 2px solid #3a5a48;
+    border-bottom: 1px solid #3a5a48;
+  }
+  #preview.qingci tbody tr { border-bottom-color: #c4d1c8; }
+  #preview.qingci tbody tr:last-child { border-bottom: 2px solid #3a5a48; }
+  #preview.qingci th { background: rgba(122, 151, 136, 0.15); color: #1a2a24; }
+  #preview.qingci tbody tr:hover { background: rgba(122, 151, 136, 0.08); }
+  #preview.qingci code {
+    background: rgba(122, 151, 136, 0.15);
+    color: #3a5a48;
+    border: none;
+  }
+  #preview.qingci pre { background: #2a3831; }
+  #preview.qingci pre code { color: #d4dfd8; }
+  #preview.qingci ul li::marker, #preview.qingci ol li::marker { color: #5a7a68; }
+
+  /* ============ 中国风 · 胭脂 ============ */
+  #preview.yanzhi {
+    background: #fdf6f5;
+    color: #3a2a2a;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    line-height: 1.95;
+    letter-spacing: 0.04em;
+  }
+  #preview.yanzhi h1, #preview.yanzhi h2, #preview.yanzhi h3 {
+    color: #4a1a24;
+    font-weight: 500;
+  }
+  #preview.yanzhi h1 {
+    font-size: 1.75em;
+    text-align: center;
+    border-bottom: none;
+    letter-spacing: 0.25em;
+    text-indent: 0.25em;
+    padding-bottom: 0.5em;
+    position: relative;
+  }
+  #preview.yanzhi h1::after {
+    content: '❁';
+    display: block;
+    color: #c65068;
+    font-size: 0.55em;
+    margin-top: 14px;
+    letter-spacing: 0;
+    text-indent: 0;
+  }
+  #preview.yanzhi h2 {
+    font-size: 1.32em;
+    border-bottom: 1px solid #f0d4d8;
+    letter-spacing: 0.12em;
+  }
+  #preview.yanzhi h2::before { background: #c65068; }
+  #preview.yanzhi strong {
+    background: none;
+    color: #a83048;
+    font-weight: 600;
+    border-bottom: 1px solid rgba(198, 80, 104, 0.4);
+  }
+  #preview.yanzhi a { color: #a83048; border-bottom-color: rgba(198, 80, 104, 0.4); }
+  #preview.yanzhi blockquote {
+    background: rgba(198, 80, 104, 0.05);
+    border-left: 3px solid #c65068;
+    color: #5a3a3a;
+    padding: 0.7em 1.4em;
+  }
+  #preview.yanzhi hr {
+    background: none;
+    height: auto;
+    text-align: center;
+    border: none;
+  }
+  #preview.yanzhi hr::before {
+    content: '❀  ❀  ❀';
+    color: #c65068;
+    letter-spacing: 0.4em;
+    font-size: 0.85em;
+    opacity: 0.7;
+  }
+  #preview.yanzhi table thead {
+    border-top: 2px solid #4a1a24;
+    border-bottom: 1px solid #4a1a24;
+  }
+  #preview.yanzhi tbody tr { border-bottom-color: #f0d4d8; }
+  #preview.yanzhi tbody tr:last-child { border-bottom: 2px solid #4a1a24; }
+  #preview.yanzhi th { background: rgba(198, 80, 104, 0.08); color: #4a1a24; }
+  #preview.yanzhi tbody tr:hover { background: rgba(198, 80, 104, 0.04); }
+  #preview.yanzhi code {
+    background: rgba(198, 80, 104, 0.1);
+    color: #a83048;
+    border: none;
+  }
+  #preview.yanzhi pre { background: #2d1e22; }
+  #preview.yanzhi pre code { color: #f0d4d8; }
+  #preview.yanzhi ul li::marker, #preview.yanzhi ol li::marker { color: #c65068; }
+
+  /* ============ 中国风 · 竹青（水墨淡雅） ============ */
+  #preview.zhuqing {
+    background: #f8f8f4;
+    color: #2a2a24;
+    font-family: "Noto Serif SC", "Source Han Serif SC", "Songti SC", serif;
+    line-height: 2;
+    letter-spacing: 0.05em;
+  }
+  #preview.zhuqing h1 {
+    font-size: 1.8em;
+    text-align: center;
+    border-bottom: none;
+    letter-spacing: 0.3em;
+    text-indent: 0.3em;
+    color: #1a1a14;
+    font-weight: 500;
+    position: relative;
+    padding-bottom: 0.5em;
+  }
+  #preview.zhuqing h1::after {
+    content: '';
+    display: block;
+    width: 24px;
+    height: 24px;
+    margin: 12px auto 0;
+    background:
+      linear-gradient(45deg, transparent 45%, #6b8367 45%, #6b8367 55%, transparent 55%),
+      linear-gradient(-45deg, transparent 45%, #6b8367 45%, #6b8367 55%, transparent 55%);
+    opacity: 0.6;
+  }
+  #preview.zhuqing h2 {
+    font-size: 1.32em;
+    color: #1a1a14;
+    font-weight: 500;
+    border-bottom: 1px dashed #c8ccc0;
+    letter-spacing: 0.15em;
+    padding-bottom: 0.3em;
+  }
+  #preview.zhuqing h2::before {
+    content: '❯';
+    background: transparent;
+    color: #6b8367;
+    width: auto;
+    height: auto;
+    font-size: 0.8em;
+    font-weight: 400;
+    margin-right: 8px;
+  }
+  #preview.zhuqing h3 { color: #3a3a2a; letter-spacing: 0.1em; }
+  #preview.zhuqing strong {
+    background: none;
+    color: #1a1a14;
+    font-weight: 600;
+    padding: 0 4px;
+    border-bottom: 2px solid #6b8367;
+  }
+  #preview.zhuqing em { color: #5a5a4a; }
+  #preview.zhuqing a { color: #4a6a48; border-bottom-color: #6b8367; }
+  #preview.zhuqing blockquote {
+    background: rgba(107, 131, 103, 0.06);
+    border-left: 2px solid #6b8367;
+    color: #3a3a2a;
+    font-family: "Songti SC", "Noto Serif SC", serif;
+    padding: 0.7em 1.5em;
+    position: relative;
+  }
+  #preview.zhuqing blockquote::before {
+    content: '';
+    position: absolute;
+    left: -2px;
+    top: 0;
+    bottom: 0;
+    width: 2px;
+    background: linear-gradient(180deg, transparent, #6b8367 30%, #6b8367 70%, transparent);
+  }
+  #preview.zhuqing hr {
+    background: none;
+    height: auto;
+    text-align: center;
+    border: none;
+  }
+  #preview.zhuqing hr::before {
+    content: '· 心 ·';
+    color: #6b8367;
+    letter-spacing: 0.5em;
+    font-size: 0.9em;
+    font-family: "Songti SC", serif;
+  }
+  #preview.zhuqing table thead {
+    border-top: 1.5px solid #3a3a2a;
+    border-bottom: 1px solid #3a3a2a;
+  }
+  #preview.zhuqing tbody tr { border-bottom-color: #d8d8cc; }
+  #preview.zhuqing tbody tr:last-child { border-bottom: 1.5px solid #3a3a2a; }
+  #preview.zhuqing th { background: rgba(107, 131, 103, 0.1); color: #1a1a14; font-weight: 500; }
+  #preview.zhuqing tbody tr:hover { background: rgba(107, 131, 103, 0.05); }
+  #preview.zhuqing code {
+    background: rgba(107, 131, 103, 0.12);
+    color: #4a6a48;
+    border: none;
+  }
+  #preview.zhuqing pre { background: #24261e; }
+  #preview.zhuqing pre code { color: #c8ccc0; }
+  #preview.zhuqing ul li::marker { color: #6b8367; content: '· '; }
+  #preview.zhuqing ol li::marker { color: #4a6a48; }
+
+  /* ============ 全局清理 · 去掉所有干扰内容的装饰符号 ============
+   * 用户反馈：段前竖线、圆点、方块、菱形、短横线等标记都会干扰阅读。
+   * 这里在所有主题最后统一擦干净，无副作用。
+   */
+  #preview h2::before,
+  #preview h3::before,
+  #preview.warm h2::before,
+  #preview.dark h2::before,
+  #preview.muji h2::before,
+  #preview.xuanzhi h2::before,
+  #preview.qingci h2::before,
+  #preview.yanzhi h2::before,
+  #preview.zhuqing h2::before {
+    content: none !important;
+    display: none !important;
+    background: transparent !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+  }
+  /* 列表：完全去掉所有前置符号（圆点、方块、菱形、短横线全部消失） */
+  #preview ul,
+  #preview.warm ul,
+  #preview.dark ul,
+  #preview.muji ul,
+  #preview.xuanzhi ul,
+  #preview.qingci ul,
+  #preview.yanzhi ul,
+  #preview.zhuqing ul {
+    list-style: none !important;
+    padding-left: 0 !important;
+  }
+  #preview ul li,
+  #preview.warm ul li,
+  #preview.dark ul li,
+  #preview.muji ul li,
+  #preview.xuanzhi ul li,
+  #preview.qingci ul li,
+  #preview.yanzhi ul li,
+  #preview.zhuqing ul li {
+    position: static !important;
+    padding-left: 0 !important;
+  }
+  #preview ul li::marker,
+  #preview ul li::before,
+  #preview.warm ul li::marker,
+  #preview.warm ul li::before,
+  #preview.dark ul li::marker,
+  #preview.dark ul li::before,
+  #preview.muji ul li::marker,
+  #preview.muji ul li::before,
+  #preview.xuanzhi ul li::marker,
+  #preview.xuanzhi ul li::before,
+  #preview.qingci ul li::marker,
+  #preview.qingci ul li::before,
+  #preview.yanzhi ul li::marker,
+  #preview.yanzhi ul li::before,
+  #preview.zhuqing ul li::marker,
+  #preview.zhuqing ul li::before {
+    content: none !important;
+    display: none !important;
+    background: transparent !important;
+    color: transparent !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+  /* 有序列表 —— 保留数字（不是装饰符号，是内容） */
+  #preview ol {
+    padding-left: 1.8em;
+  }
+  #preview ol li::marker {
+    color: currentColor;
+    opacity: 0.55;
+    font-weight: 400;
+  }
+  #preview.muji pre,
+  #preview.xuanzhi pre,
+  #preview.qingci pre,
+  #preview.yanzhi pre,
+  #preview.zhuqing pre {
+    border-left: none !important;
+    border-left-width: 0 !important;
+    box-shadow: none !important;
+  }
+  /* ============ 代码块彻底去竖线（全主题 + 所有子元素） ============ */
+  #preview pre,
+  #preview pre code,
+  #preview pre *,
+  #preview.warm pre, #preview.warm pre *,
+  #preview.dark pre, #preview.dark pre *,
+  #preview.muji pre *,
+  #preview.xuanzhi pre *,
+  #preview.qingci pre *,
+  #preview.yanzhi pre *,
+  #preview.zhuqing pre * {
+    border-left: none !important;
+    border-left-width: 0 !important;
+    border-left-style: none !important;
+    box-shadow: none !important;
+  }
+
+  /* ============ 引用块彻底去左侧竖线（全主题） ============ */
+  #preview blockquote,
+  #preview.warm blockquote,
+  #preview.dark blockquote,
+  #preview.muji blockquote,
+  #preview.xuanzhi blockquote,
+  #preview.qingci blockquote,
+  #preview.yanzhi blockquote,
+  #preview.zhuqing blockquote {
+    border-left: none !important;
+    border-left-width: 0 !important;
+    border-left-style: none !important;
+  }
+  #preview blockquote::before,
+  #preview.zhuqing blockquote::before {
+    display: none !important;
+    content: none !important;
+    background: none !important;
+    width: 0 !important;
+    height: 0 !important;
+  }
+
+  /* ============ 任务列表：完全隐藏 checkbox 方框 ============ */
+  #preview input[type="checkbox"],
+  #preview.warm input[type="checkbox"],
+  #preview.dark input[type="checkbox"],
+  #preview.muji input[type="checkbox"],
+  #preview.xuanzhi input[type="checkbox"],
+  #preview.qingci input[type="checkbox"],
+  #preview.yanzhi input[type="checkbox"],
+  #preview.zhuqing input[type="checkbox"] {
+    display: none !important;
+  }
+  /* ============ 加粗：只加粗，不加下划线/波浪线/背景色 ============ */
+  #preview strong,
+  #preview.warm strong,
+  #preview.dark strong,
+  #preview.muji strong,
+  #preview.xuanzhi strong,
+  #preview.qingci strong,
+  #preview.yanzhi strong,
+  #preview.zhuqing strong {
+    background: none !important;
+    background-color: transparent !important;
+    background-image: none !important;
+    border-bottom: none !important;
+    border-bottom-width: 0 !important;
+    border-bottom-style: none !important;
+    text-decoration: none !important;
+    padding: 0 !important;
+    font-weight: 700 !important;
+    color: inherit !important;
+  }
+
+  /* ============ 斜体：作为注释语气，比正文淡一档 ============ */
+  #preview em,
+  #preview.warm em,
+  #preview.dark em,
+  #preview.muji em,
+  #preview.xuanzhi em,
+  #preview.qingci em,
+  #preview.yanzhi em,
+  #preview.zhuqing em {
+    font-style: italic;
+    opacity: 0.75;
+    color: inherit;
+  }
+
+  /* ============ 已完成任务的删除线：用中性灰，不用当前色（避免变红） ============ */
+  #preview li:has(input[type="checkbox"][checked]),
+  #preview.warm li:has(input[type="checkbox"][checked]),
+  #preview.dark li:has(input[type="checkbox"][checked]),
+  #preview.muji li:has(input[type="checkbox"][checked]),
+  #preview.xuanzhi li:has(input[type="checkbox"][checked]),
+  #preview.qingci li:has(input[type="checkbox"][checked]),
+  #preview.yanzhi li:has(input[type="checkbox"][checked]),
+  #preview.zhuqing li:has(input[type="checkbox"][checked]) {
+    text-decoration: line-through !important;
+    text-decoration-color: rgba(128, 128, 128, 0.5) !important;
+    text-decoration-thickness: 1px !important;
+    opacity: 0.5 !important;
+    color: #888 !important;
+  }
+  /* 深色主题下删除线用浅灰 */
+  #preview.dark li:has(input[type="checkbox"][checked]) {
+    text-decoration-color: rgba(200, 200, 200, 0.3) !important;
+    color: #888 !important;
+  }
+
+  /* 任务列表：checkbox 前无任何装饰 */
+  #preview ul > li:has(> input[type="checkbox"])::before {
+    display: none !important;
+    content: none !important;
+  }
+
+  /* ============ 清理 H1 下方所有装饰符号（❋ ❁ ❯ — 等） ============ */
+  #preview h1::after,
+  #preview.muji h1::after,
+  #preview.xuanzhi h1::after,
+  #preview.qingci h1::after,
+  #preview.yanzhi h1::after,
+  #preview.zhuqing h1::after {
+    content: none !important;
+    display: none !important;
+    background: none !important;
+    width: 0 !important;
+    height: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* ============ 分隔线清理 · 用极淡的居中细线代替所有装饰符号 ============
+   * 之前的 ❈❈❈ / · 心 · / ◈ / ❀❀❀ / · · · 都属于"符号干扰"，全部换成简洁的中线。
+   */
+  #preview hr,
+  #preview.muji hr,
+  #preview.xuanzhi hr,
+  #preview.qingci hr,
+  #preview.yanzhi hr,
+  #preview.zhuqing hr,
+  #preview.dark hr,
+  #preview.warm hr {
+    border: none !important;
+    height: 1px !important;
+    background: currentColor !important;
+    opacity: 0.15 !important;
+    max-width: 100px;
+    margin: 2.2em auto !important;
+    text-align: center !important;
+  }
+  #preview hr::before,
+  #preview.muji hr::before,
+  #preview.xuanzhi hr::before,
+  #preview.qingci hr::before,
+  #preview.yanzhi hr::before,
+  #preview.zhuqing hr::before {
+    content: none !important;
+    display: none !important;
+  }
+
+  /* ============ 平台风格 · 微信公众号 ============
+   * 蓝色主色 #576b95 · 首行缩进 · 段间距舒展
+   */
+  #preview.wechat {
+    background: #fff;
+    color: #3f3f3f;
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    line-height: 1.85;
+    letter-spacing: 0.02em;
+  }
+  #preview.wechat h1, #preview.wechat h2, #preview.wechat h3 {
+    color: #576b95;
+    font-weight: 600;
+  }
+  #preview.wechat h1 {
+    font-size: 1.5em;
+    text-align: center;
+    margin: 1.4em 0 1em;
+    border-bottom: none;
+  }
+  #preview.wechat h2 {
+    font-size: 1.25em;
+    margin: 1.4em 0 0.8em;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 0.3em;
+  }
+  #preview.wechat h3 { font-size: 1.1em; }
+  #preview.wechat p { text-indent: 2em; margin: 1.2em 0; }
+  #preview.wechat blockquote p, #preview.wechat li p,
+  #preview.wechat td p, #preview.wechat th p { text-indent: 0; }
+  #preview.wechat blockquote {
+    background: #fafafa; color: #666; padding: 0.6em 1.2em;
+  }
+  #preview.wechat a { color: #576b95; }
+
+  /* ============ 平台风格 · 小红书 ============
+   * 粉红调 · 窄栏 · 短段落
+   */
+  #preview.xhs {
+    background: #fff;
+    color: #333;
+    font-family: -apple-system, "PingFang SC", "Hiragino Sans GB", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.75;
+    max-width: 640px;
+    margin: 0 auto;
+  }
+  #preview.xhs h1, #preview.xhs h2, #preview.xhs h3 {
+    font-weight: 700;
+  }
+  #preview.xhs h1 {
+    font-size: 1.35em; color: #ff2442;
+    margin: 1em 0 0.5em; border-bottom: none;
+  }
+  #preview.xhs h2 { font-size: 1.15em; color: #222; margin: 1em 0 0.4em; border-bottom: none; }
+  #preview.xhs h3 { font-size: 1.05em; color: #ff2442; }
+  #preview.xhs p { margin: 0.7em 0; line-height: 1.75; }
+  #preview.xhs blockquote {
+    background: #fff4f0; color: #666;
+    padding: 0.7em 1.2em; border-radius: 6px;
+  }
+  #preview.xhs a { color: #ff2442; }
+
+  /* ============ 平台风格 · 掘金 ============
+   * 掘金蓝 #1e80ff · 技术风
+   */
+  #preview.juejin {
+    background: #fff;
+    color: #252933;
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    font-size: 15px;
+    line-height: 1.8;
+  }
+  #preview.juejin h1, #preview.juejin h2, #preview.juejin h3 {
+    font-weight: 700; color: #252933;
+  }
+  #preview.juejin h1 {
+    font-size: 1.6em; color: #1e80ff;
+    padding-bottom: 0.4em;
+    border-bottom: 2px solid #1e80ff;
+    margin: 1.4em 0 0.8em;
+  }
+  #preview.juejin h2 {
+    font-size: 1.3em; margin: 1.2em 0 0.6em;
+    border-bottom: 1px solid #eaecef; padding-bottom: 0.2em;
+  }
+  #preview.juejin h3 { font-size: 1.12em; }
+  #preview.juejin p { margin: 0.9em 0; }
+  #preview.juejin blockquote {
+    background: #f6f8fa; color: #515767;
+    padding: 0.7em 1.2em;
+  }
+  #preview.juejin a { color: #1e80ff; }
+  #preview.juejin pre { background: #2f363d; }
+  #preview.juejin pre code { color: #e1e4e8; }
+  #preview.juejin code {
+    background: #f2f3f5; color: #476582;
+    border: 1px solid #e5e6e7;
+  }
+  #preview.juejin table thead { border-color: #1e80ff; }
+  #preview.juejin tbody tr:last-child { border-bottom-color: #1e80ff; }
+
+  /* ============ 平台风格 · 知乎 ============
+   * 黑白灰 · 长文阅读 · 大段间距
+   */
+  #preview.zhihu {
+    background: #fff;
+    color: #1a1a1a;
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
+    font-size: 16.5px;
+    line-height: 1.9;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  #preview.zhihu h1, #preview.zhihu h2, #preview.zhihu h3 {
+    font-weight: 600; color: #1a1a1a;
+  }
+  #preview.zhihu h1 { font-size: 1.5em; margin: 1.5em 0 0.8em; border-bottom: none; }
+  #preview.zhihu h2 { font-size: 1.28em; margin: 1.4em 0 0.6em; border-bottom: none; }
+  #preview.zhihu h3 { font-size: 1.1em; margin: 1.2em 0 0.5em; }
+  #preview.zhihu p { margin: 1.3em 0; }
+  #preview.zhihu blockquote {
+    background: transparent; color: #555;
+    padding: 0.5em 1em;
+    font-style: normal;
+  }
+  #preview.zhihu a { color: #0084ff; }
+
+  /* ============ 平台风格 · GitHub README ============
+   * 官方 markdown 样式还原（无装饰）
+   */
+  #preview.gh {
+    background: #fff;
+    color: #24292f;
+    font-family: -apple-system, "Segoe UI", "PingFang SC", sans-serif;
+    font-size: 16px;
+    line-height: 1.6;
+  }
+  #preview.gh h1, #preview.gh h2, #preview.gh h3 { font-weight: 600; color: #24292f; }
+  #preview.gh h1 {
+    font-size: 2em; padding-bottom: 0.3em;
+    border-bottom: 1px solid #d0d7de; margin: 1.4em 0 0.8em;
+  }
+  #preview.gh h2 {
+    font-size: 1.5em; padding-bottom: 0.3em;
+    border-bottom: 1px solid #d0d7de; margin: 1.4em 0 0.6em;
+  }
+  #preview.gh h3 { font-size: 1.25em; margin: 1.2em 0 0.6em; }
+  #preview.gh blockquote {
+    color: #656d76; background: transparent;
+    padding: 0 1em; margin: 16px 0;
+  }
+  #preview.gh a { color: #0969da; }
+  #preview.gh pre { background: #f6f8fa; }
+  #preview.gh pre code { color: #24292f; }
+  #preview.gh code {
+    background: rgba(175,184,193,0.2); color: #d63384;
+    border: none;
+  }
+  #preview.gh table thead {
+    border-top: 1px solid #d0d7de;
+    border-bottom: 2px solid #d0d7de;
+  }
+  #preview.gh tbody tr { border-bottom-color: #d0d7de; }
+  #preview.gh tbody tr:last-child { border-bottom: 1px solid #d0d7de; }
+  #preview.gh th { background: #f6f8fa; }
+
+  /* ============ 平台风格 · 报纸 ============
+   * 衬线字体 · 严肃 · 中央对齐（首字下沉不加，容易乱）
+   */
+  #preview.news {
+    background: #fbfbf6;
+    color: #1a1a1a;
+    font-family: Georgia, "Times New Roman", "Songti SC", "Noto Serif SC", serif;
+    font-size: 17px;
+    line-height: 1.8;
+    letter-spacing: 0.01em;
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  #preview.news h1 {
+    font-size: 2em; font-weight: 900; text-align: center;
+    letter-spacing: 0.15em; text-indent: 0.15em;
+    border-bottom: 3px double #333; padding-bottom: 0.5em;
+    margin: 0.5em 0 1em;
+  }
+  #preview.news h2 {
+    font-size: 1.4em; font-weight: 700; text-align: center;
+    margin: 1.4em 0 0.6em; letter-spacing: 0.1em;
+    border-bottom: none;
+  }
+  #preview.news h3 { font-size: 1.15em; font-weight: 700; margin: 1.2em 0 0.5em; }
+  #preview.news p { text-indent: 2em; text-align: justify; margin: 1em 0; }
+  #preview.news blockquote p, #preview.news li p,
+  #preview.news td p, #preview.news th p { text-indent: 0; }
+  #preview.news blockquote {
+    background: transparent;
+    border-top: 1px solid #999; border-bottom: 1px solid #999;
+    padding: 0.8em 1em; margin: 1.4em 0;
+    font-style: italic; text-align: center;
+  }
+  #preview.news a { color: #1a1a1a; }
+
+  /* ============ 平台风格 · 打字机（等宽） ============
+   * 全等宽字体 · 极简黑白（保留 strong 不改颜色不加黄底）
+   */
+  #preview.typewriter {
+    background: #fff;
+    color: #111;
+    font-family: "SF Mono", "JetBrains Mono", Menlo, "Sarasa Mono SC", "Courier New", monospace;
+    font-size: 14.5px;
+    line-height: 1.75;
+  }
+  #preview.typewriter h1, #preview.typewriter h2, #preview.typewriter h3 {
+    font-weight: 700; color: #000;
+  }
+  #preview.typewriter h1 {
+    font-size: 1.4em; margin: 1.4em 0 0.8em;
+    border-bottom: 1px solid #000; padding-bottom: 0.3em;
+  }
+  #preview.typewriter h2 { font-size: 1.2em; margin: 1.3em 0 0.6em; border-bottom: none; }
+  #preview.typewriter h3 { font-size: 1.1em; margin: 1.2em 0 0.5em; }
+  #preview.typewriter p { margin: 1em 0; }
+  #preview.typewriter blockquote {
+    background: #f5f5f5; color: #333;
+    padding: 0.6em 1em;
+  }
+  #preview.typewriter a { color: #000; }
+  #preview.typewriter code {
+    background: #f2f2f2; color: #111;
+    border: none; padding: 1px 4px;
+  }
+  #preview.typewriter pre { background: #111; }
+  #preview.typewriter pre code { color: #eee; background: transparent; }
+  #preview.typewriter table thead { border-color: #000; }
+  #preview.typewriter tbody tr:last-child { border-bottom-color: #000; }
+  #preview.typewriter th { background: #111; color: #fff; }
+
+
+  /* ============ 打印样式（Cmd+P → 存储为 PDF 无损矢量）============ */
+  @media print {
+    /* 页面尺寸：A4，边距由内容决定 */
+    @page {
+      size: A4;
+      margin: 18mm 15mm;
+    }
+    /* 重置 app 布局，只保留预览内容 */
+    html, body {
+      background: #fff !important;
+      height: auto !important;
+      overflow: visible !important;
+      margin: 0 !important;
+      padding: 0 !important;
+    }
+    /* 隐藏所有 UI 元素 */
+    header, .pane-header, .options, .toast, #input,
+    .pane:first-child {
+      display: none !important;
+    }
+    /* main / pane 恢复自然布局 */
+    main {
+      display: block !important;
+      grid-template-columns: none !important;
+      background: transparent !important;
+      overflow: visible !important;
+      height: auto !important;
+    }
+    .pane {
+      display: block !important;
+      overflow: visible !important;
+      background: transparent !important;
+    }
+    /* 预览区完全展开 */
+    #preview {
+      flex: none !important;
+      overflow: visible !important;
+      height: auto !important;
+      max-height: none !important;
+      padding: 0 !important;
+      background: #fff !important;
+      color: #000 !important;
+      font-size: 11pt !important;
+      line-height: 1.75 !important;
+    }
+    /* 深色主题打印时反色 */
+    #preview.dark {
+      background: #fff !important;
+      color: #000 !important;
+    }
+    #preview.dark h1, #preview.dark h2, #preview.dark h3, #preview.dark h4 {
+      color: #000 !important;
+    }
+    /* 保留浅色系主题背景（宣纸、青瓷等淡雅感需要保留） */
+    #preview.xuanzhi { background: #f6efe0 !important; color: #2b241a !important; }
+    #preview.qingci  { background: #f1f5f2 !important; color: #2c3a34 !important; }
+    #preview.yanzhi  { background: #fdf6f5 !important; color: #3a2a2a !important; }
+    #preview.zhuqing { background: #f8f8f4 !important; color: #2a2a24 !important; }
+    #preview.warm    { background: #faf8f3 !important; color: #2c2416 !important; }
+    /* 打印时启用背景色打印（Chrome / Safari） */
+    * {
+      -webkit-print-color-adjust: exact !important;
+      print-color-adjust: exact !important;
+      color-adjust: exact !important;
+    }
+    /* 避免代码块、表格、引用被切成两页 */
+    pre, blockquote, table {
+      page-break-inside: avoid;
+      break-inside: avoid;
+    }
+    /* 标题不孤悬在页尾 */
+    h1, h2, h3, h4 {
+      page-break-after: avoid;
+      break-after: avoid;
+    }
+    /* 表格头部在跨页时重复 */
+    thead { display: table-header-group; }
+    tfoot { display: table-footer-group; }
+    /* 链接后不显示 URL（默认 Chrome 会加） */
+    a[href]::after { content: none !important; }
+    /* 隐藏 toast */
+    .toast { display: none !important; }
+  }
+
+  /* ============ 高端 · 法律文书 ============
+   * 方正宋体 · 首行缩进 · 编号感 · 正式感
+   */
+  #preview.legal {
+    background: #fff;
+    color: #1a1a1a;
+    font-family: "Songti SC", "Noto Serif SC", "SimSun", "STSong", serif;
+    font-size: 16px;
+    line-height: 2;
+    letter-spacing: 0.03em;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  #preview.legal h1 {
+    font-size: 1.6em;
+    text-align: center;
+    letter-spacing: 0.4em;
+    text-indent: 0.4em;
+    font-weight: 700;
+    color: #000;
+    margin: 0.5em 0 1.5em;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  #preview.legal h2 {
+    font-size: 1.2em;
+    text-align: center;
+    font-weight: 700;
+    color: #000;
+    margin: 1.8em 0 0.8em;
+    letter-spacing: 0.2em;
+    border-bottom: none;
+  }
+  #preview.legal h3 {
+    font-size: 1.05em;
+    font-weight: 700;
+    color: #000;
+    margin: 1.4em 0 0.6em;
+    letter-spacing: 0.1em;
+  }
+  #preview.legal p {
+    text-indent: 2em;
+    text-align: justify;
+    margin: 1em 0;
+  }
+  #preview.legal blockquote p, #preview.legal li p,
+  #preview.legal td p, #preview.legal th p { text-indent: 0; }
+  #preview.legal blockquote {
+    background: transparent;
+    padding: 0.5em 2em;
+    border-top: 1px solid #333;
+    border-bottom: 1px solid #333;
+    margin: 1.5em 0;
+    color: #333;
+  }
+  #preview.legal a { color: #000; }
+  #preview.legal ol { padding-left: 2.4em; }
+  #preview.legal ol li::marker { color: #000; font-weight: 500; }
+  #preview.legal table thead {
+    border-top: 2px solid #000;
+    border-bottom: 1px solid #000;
+  }
+  #preview.legal tbody tr:last-child { border-bottom: 2px solid #000; }
+  #preview.legal th { background: #f5f5f5; }
+
+  /* ============ 高端 · Notion ============
+   * Inter/系统字体 · 灰白极简 · 圆角柔和
+   */
+  #preview.notion {
+    background: #fff;
+    color: #37352f;
+    font-family: -apple-system, "Segoe UI", "Inter", "PingFang SC", sans-serif;
+    font-size: 15.5px;
+    line-height: 1.65;
+    letter-spacing: -0.003em;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  #preview.notion h1, #preview.notion h2, #preview.notion h3 {
+    color: #37352f; font-weight: 700;
+  }
+  #preview.notion h1 {
+    font-size: 2.1em; margin: 0.5em 0 0.6em;
+    letter-spacing: -0.02em;
+    border-bottom: none;
+  }
+  #preview.notion h2 {
+    font-size: 1.5em; margin: 1.4em 0 0.5em;
+    letter-spacing: -0.01em;
+    border-bottom: none;
+  }
+  #preview.notion h3 { font-size: 1.2em; margin: 1.2em 0 0.4em; }
+  #preview.notion p { margin: 0.5em 0; color: #37352f; }
+  #preview.notion blockquote {
+    background: transparent;
+    color: #37352f;
+    padding: 0.2em 1em;
+    margin: 0.6em 0;
+    font-style: normal;
+  }
+  #preview.notion a {
+    color: #37352f;
+    border-bottom: 0.05em solid rgba(55,53,47,0.4);
+  }
+  #preview.notion code {
+    background: rgba(135,131,120,0.15);
+    color: #eb5757;
+    border: none;
+    font-family: SFMono-Regular, Consolas, monospace;
+    font-size: 0.85em;
+    padding: 3px 6px;
+    border-radius: 3px;
+  }
+  #preview.notion pre {
+    background: #f7f6f3; border-radius: 3px;
+  }
+  #preview.notion pre code { color: #37352f; }
+  #preview.notion table {
+    font-size: 0.95em;
+  }
+  #preview.notion table thead {
+    border-top: 1px solid #e9e9e7;
+    border-bottom: 1px solid #e9e9e7;
+  }
+  #preview.notion tbody tr { border-bottom-color: #e9e9e7; }
+  #preview.notion tbody tr:last-child { border-bottom-color: #e9e9e7; }
+  #preview.notion th {
+    background: transparent;
+    color: rgba(55,53,47,0.65);
+    font-weight: 500;
+    font-size: 0.85em;
+  }
+  #preview.notion tbody tr:hover { background: rgba(55,53,47,0.03); }
+
+  /* ============ 高端 · Linear ============
+   * 深色科技风 · 细字体 · 渐变
+   */
+  #preview.linear {
+    background: linear-gradient(180deg, #08090a 0%, #101113 100%);
+    color: #b4bcd0;
+    font-family: "Inter", -apple-system, "PingFang SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.7;
+    letter-spacing: -0.005em;
+  }
+  #preview.linear h1, #preview.linear h2, #preview.linear h3 {
+    color: #f7f8f8;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+  }
+  #preview.linear h1 {
+    font-size: 2em;
+    margin: 0.5em 0 0.8em;
+    border-bottom: none;
+    background: linear-gradient(180deg, #fff 0%, #a8b0c2 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  #preview.linear h2 {
+    font-size: 1.4em;
+    margin: 1.5em 0 0.6em;
+    border-bottom: none;
+  }
+  #preview.linear h3 { font-size: 1.15em; margin: 1.3em 0 0.5em; }
+  #preview.linear p { margin: 1em 0; }
+  #preview.linear strong { color: #fff; font-weight: 600; }
+  #preview.linear em { color: #94a1b8; }
+  #preview.linear blockquote {
+    background: rgba(90,101,127,0.08);
+    color: #d0d6e0;
+    padding: 0.7em 1.2em;
+    border-radius: 6px;
+  }
+  #preview.linear a {
+    color: #a3b4ff;
+    border-bottom-color: rgba(163,180,255,0.4);
+  }
+  #preview.linear code {
+    background: rgba(90,101,127,0.15);
+    color: #e2c5ff;
+    border: 1px solid rgba(90,101,127,0.2);
+  }
+  #preview.linear pre {
+    background: #0f1114;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+  #preview.linear pre code {
+    color: #d8dae0; background: transparent; border: none;
+  }
+  #preview.linear table thead {
+    border-color: rgba(255,255,255,0.15);
+  }
+  #preview.linear tbody tr { border-bottom-color: rgba(255,255,255,0.05); }
+  #preview.linear tbody tr:last-child { border-bottom-color: rgba(255,255,255,0.15); }
+  #preview.linear th {
+    background: rgba(255,255,255,0.03);
+    color: #f7f8f8;
+  }
+  #preview.linear tbody tr:hover { background: rgba(255,255,255,0.02); }
+  #preview.linear hr { background: rgba(255,255,255,0.1) !important; opacity: 1 !important; }
+
+  /* ============ 高端 · Apple ============
+   * Apple 官网 · 大字号 · 极致留白
+   */
+  #preview.apple {
+    background: #fff;
+    color: #1d1d1f;
+    font-family: -apple-system, "SF Pro Display", "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    font-size: 17px;
+    line-height: 1.5;
+    letter-spacing: -0.01em;
+    max-width: 780px;
+    margin: 0 auto;
+  }
+  #preview.apple h1 {
+    font-size: 3em;
+    font-weight: 700;
+    letter-spacing: -0.03em;
+    line-height: 1.1;
+    color: #1d1d1f;
+    margin: 0.4em 0 0.6em;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  #preview.apple h2 {
+    font-size: 2em;
+    font-weight: 600;
+    letter-spacing: -0.02em;
+    line-height: 1.15;
+    color: #1d1d1f;
+    margin: 1.5em 0 0.6em;
+    border-bottom: none;
+  }
+  #preview.apple h3 {
+    font-size: 1.4em;
+    font-weight: 600;
+    color: #1d1d1f;
+    margin: 1.3em 0 0.5em;
+  }
+  #preview.apple p {
+    margin: 1.2em 0;
+    color: #1d1d1f;
+    font-size: 1.05em;
+  }
+  #preview.apple strong { color: #1d1d1f; font-weight: 600; }
+  #preview.apple blockquote {
+    background: transparent;
+    color: #6e6e73;
+    padding: 0.5em 0 0.5em 1em;
+    margin: 1.5em 0;
+    font-size: 1.05em;
+  }
+  #preview.apple a {
+    color: #0071e3;
+    border-bottom: none;
+  }
+  #preview.apple a:hover { text-decoration: underline; }
+  #preview.apple code {
+    background: #f5f5f7;
+    color: #1d1d1f;
+    border: none;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "SF Mono", Menlo, monospace;
+    font-size: 0.88em;
+  }
+  #preview.apple pre {
+    background: #1d1d1f;
+    border-radius: 12px;
+    padding: 1.4em;
+  }
+  #preview.apple pre code { color: #f5f5f7; }
+  #preview.apple table thead {
+    border-top: none;
+    border-bottom: 1px solid #d2d2d7;
+  }
+  #preview.apple tbody tr { border-bottom-color: #d2d2d7; }
+  #preview.apple tbody tr:last-child { border-bottom: 1px solid #d2d2d7; }
+
+  /* ============ 高端 · Vercel ============
+   * 极致黑白 · 几何感 · Geist 字体
+   */
+  #preview.vercel {
+    background: #fff;
+    color: #000;
+    font-family: "Geist", "Inter", -apple-system, "PingFang SC", sans-serif;
+    font-size: 15px;
+    line-height: 1.6;
+    letter-spacing: -0.011em;
+  }
+  #preview.vercel h1, #preview.vercel h2, #preview.vercel h3 {
+    color: #000; font-weight: 700; letter-spacing: -0.028em;
+  }
+  #preview.vercel h1 {
+    font-size: 2.2em; margin: 0.5em 0 0.7em;
+    border-bottom: none;
+  }
+  #preview.vercel h2 {
+    font-size: 1.5em; margin: 1.5em 0 0.6em;
+    border-bottom: none;
+  }
+  #preview.vercel h3 { font-size: 1.2em; margin: 1.3em 0 0.5em; }
+  #preview.vercel p { color: #666; margin: 1em 0; }
+  #preview.vercel strong { color: #000; font-weight: 600; }
+  #preview.vercel blockquote {
+    background: #fafafa;
+    color: #333;
+    padding: 0.9em 1.2em;
+    border-radius: 8px;
+    margin: 1.3em 0;
+    border: 1px solid #eaeaea;
+  }
+  #preview.vercel a { color: #000; text-decoration: underline; text-decoration-thickness: 1px; text-underline-offset: 3px; border-bottom: none; }
+  #preview.vercel code {
+    background: #fafafa;
+    color: #ff0080;
+    border: 1px solid #eaeaea;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-family: "Geist Mono", "SF Mono", monospace;
+  }
+  #preview.vercel pre {
+    background: #000;
+    border-radius: 8px;
+    padding: 1.3em;
+  }
+  #preview.vercel pre code { color: #fff; background: transparent; border: none; }
+  #preview.vercel table {
+    border: 1px solid #eaeaea;
+    border-radius: 8px;
+    overflow: hidden;
+  }
+  #preview.vercel table thead {
+    border: none;
+    background: #fafafa;
+  }
+  #preview.vercel tbody tr { border-bottom-color: #eaeaea; }
+  #preview.vercel tbody tr:last-child { border-bottom: none; }
+  #preview.vercel th { background: transparent; color: #000; }
+
+  /* ============ 高端 · Stripe ============
+   * 商务紫蓝 · 圆滑 · 阅读友好
+   */
+  #preview.stripe {
+    background: #fff;
+    color: #425466;
+    font-family: -apple-system, "SF Pro Text", "PingFang SC", "Helvetica Neue", sans-serif;
+    font-size: 16px;
+    line-height: 1.75;
+    letter-spacing: -0.003em;
+    max-width: 760px;
+    margin: 0 auto;
+  }
+  #preview.stripe h1, #preview.stripe h2, #preview.stripe h3 {
+    color: #0a2540;
+    font-weight: 700;
+    letter-spacing: -0.02em;
+  }
+  #preview.stripe h1 {
+    font-size: 2.2em;
+    margin: 0.5em 0 0.7em;
+    line-height: 1.15;
+    border-bottom: none;
+  }
+  #preview.stripe h2 {
+    font-size: 1.5em;
+    margin: 1.5em 0 0.6em;
+    line-height: 1.25;
+    border-bottom: none;
+  }
+  #preview.stripe h3 { font-size: 1.2em; margin: 1.3em 0 0.5em; color: #0a2540; }
+  #preview.stripe p { margin: 1.2em 0; color: #425466; }
+  #preview.stripe strong { color: #0a2540; font-weight: 600; }
+  #preview.stripe blockquote {
+    background: #f6f9fc;
+    color: #425466;
+    padding: 1em 1.4em;
+    border-radius: 8px;
+    margin: 1.5em 0;
+    box-shadow: 0 1px 2px rgba(0,0,0,0.04);
+  }
+  #preview.stripe a {
+    color: #635bff;
+    border-bottom-color: rgba(99,91,255,0.4);
+  }
+  #preview.stripe code {
+    background: #f6f9fc;
+    color: #635bff;
+    border: 1px solid rgba(66,71,112,0.08);
+  }
+  #preview.stripe pre {
+    background: #0a2540;
+    border-radius: 10px;
+  }
+  #preview.stripe pre code {
+    color: #f6f9fc; background: transparent; border: none;
+  }
+  #preview.stripe table thead {
+    border-top: 1px solid #e6ebf1;
+    border-bottom: 1px solid #e6ebf1;
+  }
+  #preview.stripe tbody tr { border-bottom-color: #e6ebf1; }
+  #preview.stripe tbody tr:last-child { border-bottom: 1px solid #e6ebf1; }
+  #preview.stripe th {
+    background: #f6f9fc; color: #0a2540; font-weight: 600;
+  }
+  #preview.stripe tbody tr:hover { background: #fafbfc; }
+
+
+/* ============ Highlight.js 深色配色（默认使用） · atom-one-dark ============ */
+pre code#preview .hljs{display:block;overflow-x:auto;padding:1em}code#preview .hljs{padding:3px 5px}#preview .hljs{color:#abb2bf;background:#282c34}#preview .hljs-comment,#preview .hljs-quote{color:#5c6370;font-style:italic}#preview .hljs-doctag,#preview .hljs-formula,#preview .hljs-keyword{color:#c678dd}#preview .hljs-deletion,#preview .hljs-name,#preview .hljs-section,#preview .hljs-selector-tag,#preview .hljs-subst{color:#e06c75}#preview .hljs-literal{color:#56b6c2}#preview .hljs-addition,#preview .hljs-attribute,#preview .hljs-meta #preview .hljs-string,#preview .hljs-regexp,#preview .hljs-string{color:#98c379}#preview .hljs-attr,#preview .hljs-number,#preview .hljs-selector-attr,#preview .hljs-selector-class,#preview .hljs-selector-pseudo,#preview .hljs-template-variable,#preview .hljs-type,#preview .hljs-variable{color:#d19a66}#preview .hljs-bullet,#preview .hljs-link,#preview .hljs-meta,#preview .hljs-selector-id,#preview .hljs-symbol,#preview .hljs-title{color:#61aeee}#preview .hljs-built_in,#preview .hljs-class #preview .hljs-title,#preview .hljs-title.class_{color:#e6c07b}#preview .hljs-emphasis{font-style:italic}#preview .hljs-strong{font-weight:700}#preview .hljs-link{text-decoration:underline}
+
+/* ============ Highlight.js 浅色配色（覆盖）· atom-one-light ============
+ * 用于 pre 背景是浅色的主题，避免深色配色的字看不清
+ */
+#preview.notion pre code.hljs,
+#preview.gh pre code.hljs,
+#preview.news pre code.hljs,
+#preview.muji pre code.hljs,
+#preview.default pre code.hljs {
+  color: #383a42;
+}
+#preview.notion pre .hljs-comment, #preview.notion pre .hljs-quote,
+#preview.gh pre .hljs-comment, #preview.gh pre .hljs-quote,
+#preview.news pre .hljs-comment, #preview.news pre .hljs-quote,
+#preview.muji pre .hljs-comment, #preview.muji pre .hljs-quote { color: #a0a1a7; font-style: italic; }
+#preview.notion pre .hljs-keyword, #preview.notion pre .hljs-doctag, #preview.notion pre .hljs-formula,
+#preview.gh pre .hljs-keyword, #preview.gh pre .hljs-doctag, #preview.gh pre .hljs-formula,
+#preview.news pre .hljs-keyword, #preview.news pre .hljs-doctag, #preview.news pre .hljs-formula,
+#preview.muji pre .hljs-keyword, #preview.muji pre .hljs-doctag, #preview.muji pre .hljs-formula { color: #a626a4; }
+#preview.notion pre .hljs-string, #preview.notion pre .hljs-regexp,
+#preview.gh pre .hljs-string, #preview.gh pre .hljs-regexp,
+#preview.news pre .hljs-string, #preview.news pre .hljs-regexp,
+#preview.muji pre .hljs-string, #preview.muji pre .hljs-regexp { color: #50a14f; }
+#preview.notion pre .hljs-number, #preview.notion pre .hljs-literal,
+#preview.gh pre .hljs-number, #preview.gh pre .hljs-literal,
+#preview.news pre .hljs-number, #preview.news pre .hljs-literal,
+#preview.muji pre .hljs-number, #preview.muji pre .hljs-literal { color: #986801; }
+#preview.notion pre .hljs-title, #preview.notion pre .hljs-title.function_,
+#preview.gh pre .hljs-title, #preview.gh pre .hljs-title.function_,
+#preview.news pre .hljs-title, #preview.news pre .hljs-title.function_,
+#preview.muji pre .hljs-title, #preview.muji pre .hljs-title.function_ { color: #4078f2; }
+#preview.notion pre .hljs-variable, #preview.notion pre .hljs-attr,
+#preview.gh pre .hljs-variable, #preview.gh pre .hljs-attr,
+#preview.news pre .hljs-variable, #preview.news pre .hljs-attr,
+#preview.muji pre .hljs-variable, #preview.muji pre .hljs-attr { color: #e45649; }
+
+/* 全局清理：hljs 不允许设置自己的 background（应由主题的 pre 定义） */
+#preview .hljs {
+  background: transparent !important;
+  padding: 0 !important;
+}
+
+  /* ============ 批量转换面板 ============ */
+  .batch-panel {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 300;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(4px);
+  }
+  .batch-panel[hidden] { display: none; }
+  .batch-inner {
+    background: #fff;
+    border-radius: 12px;
+    width: 720px;
+    max-width: 92vw;
+    max-height: 82vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 12px 60px rgba(0,0,0,0.25);
+  }
+  .batch-header {
+    padding: 18px 24px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .batch-header h2 { margin: 0; font-size: 16px; font-weight: 600; }
+  .batch-drop {
+    flex: 1;
+    padding: 24px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-height: 200px;
+  }
+  .batch-drop.drag-over {
+    background: rgba(26, 26, 26, 0.03);
+    outline: 2px dashed #1a1a1a;
+    outline-offset: -12px;
+  }
+  .batch-drop-hint {
+    text-align: center;
+    padding: 40px 20px;
+    border: 2px dashed #d0d0d3;
+    border-radius: 8px;
+    color: #666;
+  }
+  .batch-drop-title { font-size: 15px; font-weight: 500; color: #333; margin-bottom: 6px; }
+  .batch-drop-sub { font-size: 13px; }
+  .batch-file-picker {
+    color: #1a1a1a;
+    text-decoration: underline;
+    cursor: pointer;
+    font-weight: 500;
+  }
+  .batch-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+  .batch-list li {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 8px 12px;
+    background: #f7f7f8;
+    border-radius: 6px;
+    font-size: 13px;
+  }
+  .batch-list .item-name { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .batch-list .item-size { color: #999; font-size: 12px; }
+  .batch-list .item-status { font-size: 12px; padding: 2px 8px; border-radius: 3px; }
+  .batch-list .item-status.pending { background: #eaeaea; color: #666; }
+  .batch-list .item-status.done { background: #d4f0dd; color: #1a7c3c; }
+  .batch-list .item-status.error { background: #f5d4d4; color: #a03030; }
+  .batch-list .item-remove {
+    background: none; border: none; cursor: pointer; color: #999;
+    font-size: 16px; padding: 0 4px; line-height: 1;
+  }
+  .batch-list .item-remove:hover { color: #a03030; }
+  .batch-controls {
+    padding: 16px 24px;
+    border-top: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    flex-wrap: wrap;
+  }
+  .batch-ctrl { display: flex; align-items: center; gap: 6px; font-size: 13px; }
+  .batch-ctrl select {
+    padding: 5px 10px;
+    border: 1px solid #d0d0d3;
+    background: #fff;
+    border-radius: 5px;
+    font-size: 13px;
+    font-family: inherit;
+  }
+  .batch-count { color: #666; font-size: 12px; margin-left: auto; }
+  .batch-go {
+    padding: 8px 18px;
+    background: #1a1a1a; color: #fff; border: none; border-radius: 6px;
+    font-size: 13px; cursor: pointer;
+  }
+  .batch-go:hover { background: #333; }
+  .batch-go:disabled { background: #ccc; cursor: not-allowed; }
+
+  /* ============ 全局拖拽提示遮罩 ============ */
+  #global-drop-hint {
+    position: fixed; inset: 0; z-index: 500;
+    background: rgba(26, 26, 26, 0.75);
+    backdrop-filter: blur(6px);
+    display: flex; align-items: center; justify-content: center;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 0.15s;
+  }
+  #global-drop-hint.show { opacity: 1; }
+  #global-drop-hint .inner {
+    background: #fff; color: #111;
+    padding: 40px 60px; border-radius: 16px;
+    border: 2px dashed rgba(0,0,0,0.2);
+    text-align: center;
+  }
+  #global-drop-hint .big {
+    font-size: 22px; font-weight: 600; margin-bottom: 8px;
+  }
+  #global-drop-hint .sub { color: #666; font-size: 14px; }
+
+  /* 批量面板：目录授权状态 */
+  .batch-dir-status {
+    font-size: 12px; color: #666;
+    display: inline-flex; align-items: center; gap: 6px;
+  }
+  .batch-dir-status.on { color: #1a7c3c; }
+  .batch-dir-btn {
+    padding: 5px 10px; font-size: 12px;
+    background: transparent; color: #333;
+    border: 1px solid #d0d0d3; border-radius: 5px;
+    cursor: pointer;
+  }
+  .batch-dir-btn:hover { background: #f0f0f2; }
+  .batch-dir-btn.on { border-color: #1a7c3c; color: #1a7c3c; }
+
+  /* ============ 高端 · Ant Design ============
+   * Ant 设计语言 · 主色 #1677ff · 干净卡片化 · 8pt 网格 · 企业级审美
+   */
+  #preview.antd {
+    background: #fff;
+    color: rgba(0, 0, 0, 0.88);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+    font-size: 14px;
+    line-height: 1.5714;
+    letter-spacing: normal;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  #preview.antd h1, #preview.antd h2, #preview.antd h3, #preview.antd h4 {
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  #preview.antd h1 {
+    font-size: 32px;
+    margin: 0.5em 0 0.75em;
+    padding-bottom: 0;
+    border-bottom: none;
+    letter-spacing: -0.5px;
+  }
+  #preview.antd h2 {
+    font-size: 22px;
+    margin: 1.6em 0 0.75em;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(5, 5, 5, 0.06);
+  }
+  #preview.antd h3 {
+    font-size: 18px;
+    margin: 1.4em 0 0.6em;
+  }
+  #preview.antd h4 { font-size: 16px; margin: 1.2em 0 0.5em; }
+  #preview.antd p {
+    margin: 12px 0;
+    color: rgba(0, 0, 0, 0.85);
+  }
+  #preview.antd strong {
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 600;
+  }
+  #preview.antd em {
+    color: rgba(0, 0, 0, 0.65);
+  }
+  #preview.antd a {
+    color: #1677ff;
+    border-bottom: none;
+  }
+  #preview.antd a:hover { color: #4096ff; }
+  /* Ant 卡片化引用块 */
+  #preview.antd blockquote {
+    background: #f5f7fa;
+    color: rgba(0, 0, 0, 0.75);
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+    border: 1px solid rgba(5, 5, 5, 0.06);
+    font-style: normal;
+  }
+  #preview.antd blockquote p { margin: 4px 0; }
+  /* 行内代码 · Ant 淡蓝底 */
+  #preview.antd code {
+    background: rgba(150, 150, 150, 0.1);
+    color: #eb2f96;
+    padding: 2.5px 6px;
+    border: 1px solid rgba(5, 5, 5, 0.06);
+    border-radius: 4px;
+    font-family: SFMono-Regular, Consolas, "Liberation Mono", Menlo, monospace;
+    font-size: 12.6px;
+  }
+  #preview.antd pre {
+    background: #f6f8fa;
+    border: 1px solid rgba(5, 5, 5, 0.06);
+    border-radius: 8px;
+    padding: 16px 20px;
+    margin: 16px 0;
+  }
+  #preview.antd pre code {
+    background: transparent;
+    border: none;
+    color: rgba(0, 0, 0, 0.85);
+    font-size: 13px;
+    padding: 0;
+  }
+  /* Ant Table · 细边框 · 表头灰底 */
+  #preview.antd table {
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #f0f0f0;
+    border-radius: 8px;
+    overflow: hidden;
+    margin: 16px 0;
+    font-size: 14px;
+  }
+  #preview.antd table thead {
+    background: #fafafa;
+    border: none;
+  }
+  #preview.antd table th {
+    background: #fafafa;
+    color: rgba(0, 0, 0, 0.88);
+    font-weight: 600;
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    text-align: left;
+  }
+  #preview.antd table td {
+    padding: 12px 16px;
+    border-bottom: 1px solid #f0f0f0;
+    color: rgba(0, 0, 0, 0.85);
+  }
+  #preview.antd table tbody tr {
+    border-bottom: none;
+  }
+  #preview.antd table tbody tr:last-child td {
+    border-bottom: none;
+  }
+  #preview.antd table tbody tr:hover td {
+    background: #fafafa;
+  }
+  /* Ant 分隔线 */
+  #preview.antd hr {
+    background: rgba(5, 5, 5, 0.06) !important;
+    opacity: 1 !important;
+    max-width: none !important;
+    margin: 24px 0 !important;
+    height: 1px !important;
+  }
+  /* Ant 有序列表 · 蓝色数字 */
+  #preview.antd ol li::marker {
+    color: #1677ff;
+    font-weight: 500;
+  }
+
+  /* ============ 高端 · Ant Design Dark ============
+   * Ant Design 深色变体 · 主色 #1668dc · 深色企业感
+   */
+  #preview.antd-dark {
+    background: #141414;
+    color: rgba(255, 255, 255, 0.85);
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+                 "PingFang SC", sans-serif;
+    font-size: 14px;
+    line-height: 1.5714;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+  #preview.antd-dark h1, #preview.antd-dark h2, #preview.antd-dark h3, #preview.antd-dark h4 {
+    color: rgba(255, 255, 255, 0.85);
+    font-weight: 600;
+    line-height: 1.35;
+  }
+  #preview.antd-dark h1 {
+    font-size: 32px;
+    margin: 0.5em 0 0.75em;
+    border-bottom: none;
+    letter-spacing: -0.5px;
+  }
+  #preview.antd-dark h2 {
+    font-size: 22px;
+    margin: 1.6em 0 0.75em;
+    padding-bottom: 8px;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  #preview.antd-dark h3 { font-size: 18px; margin: 1.4em 0 0.6em; }
+  #preview.antd-dark p {
+    margin: 12px 0;
+    color: rgba(255, 255, 255, 0.8);
+  }
+  #preview.antd-dark strong {
+    color: #fff;
+    font-weight: 600;
+  }
+  #preview.antd-dark em { color: rgba(255, 255, 255, 0.5); }
+  #preview.antd-dark a { color: #1668dc; }
+  #preview.antd-dark a:hover { color: #3c89e8; }
+  #preview.antd-dark blockquote {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.75);
+    padding: 12px 16px;
+    margin: 16px 0;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+  }
+  #preview.antd-dark code {
+    background: rgba(255, 255, 255, 0.08);
+    color: #e878b5;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    padding: 2.5px 6px;
+    border-radius: 4px;
+  }
+  #preview.antd-dark pre {
+    background: #1f1f1f;
+    border: 1px solid rgba(255, 255, 255, 0.08);
+    border-radius: 8px;
+  }
+  #preview.antd-dark pre code {
+    background: transparent; border: none;
+    color: rgba(255, 255, 255, 0.85);
+  }
+  #preview.antd-dark table {
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+  }
+  #preview.antd-dark table thead { background: rgba(255, 255, 255, 0.04); }
+  #preview.antd-dark table th {
+    background: rgba(255, 255, 255, 0.04);
+    color: rgba(255, 255, 255, 0.85);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  }
+  #preview.antd-dark table td {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    color: rgba(255, 255, 255, 0.8);
+  }
+  #preview.antd-dark table tbody tr:last-child td { border-bottom: none; }
+  #preview.antd-dark table tbody tr:hover td { background: rgba(255, 255, 255, 0.02); }
+  #preview.antd-dark hr {
+    background: rgba(255, 255, 255, 0.12) !important;
+    opacity: 1 !important;
+  }
+  #preview.antd-dark ol li::marker { color: #1668dc; font-weight: 500; }

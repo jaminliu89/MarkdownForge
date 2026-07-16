@@ -1,0 +1,25 @@
+# Rust / Cargo
+target/
+Cargo.lock
+
+# Release artifacts
+dist-release/*.dmg
+dist-release/*.zip
+
+# macOS
+.DS_Store
+._*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+
+# Local scratch
+*.log
+/tmp/
+.bak
+*.bak
+
+# 前端 CDN 缓存备份（若手动跑过替换）
+src-frontend/libs/*.bak

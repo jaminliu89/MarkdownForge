@@ -1,0 +1,30 @@
+[package]
+name = "markdownforge"
+version = "1.0.0"
+description = "MarkdownForge Desktop"
+authors = ["kimliu"]
+edition = "2021"
+
+# 独立编译：脱离父目录 workspace，target/ 在项目内
+[workspace]
+
+[lib]
+name = "markdownforge_lib"
+crate-type = ["staticlib", "cdylib", "rlib"]
+
+[build-dependencies]
+tauri-build = { version = "2", features = [] }
+
+[dependencies]
+tauri = { version = "2", features = [] }
+tauri-plugin-clipboard-manager = "2"
+tauri-plugin-dialog = "2"
+tauri-plugin-fs = "2"
+tauri-plugin-global-shortcut = "2"
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+base64 = "0.22"
+
+[features]
+default = ["custom-protocol"]
+custom-protocol = ["tauri/custom-protocol"]

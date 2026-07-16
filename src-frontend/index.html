@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>MarkdownForge · 抛光机</title>
+<link rel="stylesheet" href="main.css">
+</head>
+<body>
+<header>
+  <h1 class="brand">Markdown 抛光机</h1>
+  <span class="hint">离线运行 · 中文优化排版</span>
+  <div class="toolbar">
+    <button id="edit-toggle" data-action="toggleEdit" title="切换预览区是否可编辑">✎ 可编辑</button>
+    <select id="theme" data-onchange="applyTheme">
+      <optgroup label="—— 基础 ——">
+        <option value="">默认（无衬线）</option>
+        <option value="serif">书籍（衬线）</option>
+        <option value="warm">米黄</option>
+        <option value="dark">深色</option>
+      </optgroup>
+      <optgroup label="—— 极简 ——">
+        <option value="muji">无印良品</option>
+      </optgroup>
+      <optgroup label="—— 中国风 · 淡雅 ——">
+        <option value="xuanzhi">宣纸（朱砂）</option>
+        <option value="qingci">青瓷（黛绿）</option>
+        <option value="zhuqing">竹青（水墨）</option>
+        <option value="yanzhi">胭脂（浅绯）</option>
+      </optgroup>
+      <optgroup label="—— 平台风格 ——">
+        <option value="wechat">微信公众号</option>
+        <option value="xhs">小红书</option>
+        <option value="juejin">掘金</option>
+        <option value="zhihu">知乎</option>
+        <option value="gh">GitHub</option>
+        <option value="news">报纸</option>
+        <option value="typewriter">打字机（等宽）</option>
+      </optgroup>
+      <optgroup label="—— 高端设计 ——">
+        <option value="legal">法律文书</option>
+        <option value="notion">Notion</option>
+        <option value="apple">Apple</option>
+        <option value="stripe">Stripe</option>
+        <option value="vercel">Vercel</option>
+        <option value="antd">Ant Design</option>
+        <option value="antd-dark">Ant Design（深色）</option>
+        <option value="linear">Linear（深色）</option>
+      </optgroup>
+    </select>
+    <button data-action="loadDemo">示例</button>
+    <button data-action="copyHTML">复制 HTML</button>
+    <button data-action="copyRich">复制富文本</button>
+    <button data-action="downloadHTML">下载 HTML</button>
+    <button data-action="downloadPDF">导出 PDF</button>
+    <button data-action="downloadPNG">生成长图</button>
+    <button class="primary" data-action="openBatch">📁 批量</button>
+  </div>
+</header>
+
+<main>
+  <div class="pane" data-pane="input">
+    <div class="pane-header">
+      <span>Markdown 输入</span>
+      <span class="pane-tools">
+        <span id="in-count" class="count">0 字</span>
+        <button class="icon-btn" data-action="togglePane" data-args="'input'" title="专注编辑（隐藏预览）">⛶</button>
+      </span>
+    </div>
+    <textarea id="input" spellcheck="false" placeholder="把 Markdown 粘贴到这里……"></textarea>
+  </div>
+  <div class="pane" data-pane="preview">
+    <div class="pane-header">
+      <span>精美预览</span>
+      <span class="pane-tools">
+        <span id="out-count" class="count">—</span>
+        <button class="icon-btn" data-action="togglePane" data-args="'preview'" title="专注预览（隐藏输入）">⛶</button>
+      </span>
+    </div>
+    <div id="preview" contenteditable="true" spellcheck="false"></div>
+  </div>
+<div id="batch-panel" class="batch-panel" hidden>
+  <div class="batch-inner">
+    <div class="batch-header">
+      <h2>批量转换</h2>
+      <button class="icon-btn" data-action="closeBatch" title="关闭">✕</button>
+    </div>
+    <div id="batch-drop" class="batch-drop">
+      <div class="batch-drop-hint">
+        <div class="batch-drop-title">拖拽 .md / .markdown / .txt 文件到这里</div>
+        <div class="batch-drop-sub">或 <label class="batch-file-picker">点击选择<input type="file" id="batch-file-input" multiple accept=".md,.markdown,.txt,text/markdown,text/plain" hidden></label> · 一次可选多个</div>
+      </div>
+      <ul id="batch-list" class="batch-list"></ul>
+    </div>
+    <div class="batch-controls">
+      <label class="batch-ctrl">
+        <span>主题</span>
+        <select id="batch-theme"></select>
+      </label>
+      <label class="batch-ctrl">
+        <span>格式</span>
+        <select id="batch-format">
+          <option value="html">HTML（独立可滚动）</option>
+          <option value="pdf">PDF（单页贴合矢量）</option>
+          <option value="png">长图 PNG（3x 高清）</option>
+        </select>
+      </label>
+      <label class="batch-ctrl">
+        <span>打包</span>
+        <select id="batch-mode">
+          <option value="single">单文件下载（多次触发）</option>
+          <option value="zip">打包 zip（一个压缩包）</option>
+        </select>
+      </label>
+      <button class="batch-dir-btn" id="batch-dir-btn" data-action="pickSaveDir">选择保存目录</button>
+      <span class="batch-dir-status" id="batch-dir-status">默认下载到浏览器下载目录</span>
+      <span class="batch-count" id="batch-count">未选择文件</span>
+      <button class="primary batch-go" data-action="runBatch" disabled>转换并保存</button>
+    </div>
+  </div>
+</div>
+<div id="global-drop-hint">
+  <div class="inner">
+    <div class="big">拖拽 Markdown 文件进来</div>
+    <div class="sub">.md · .markdown · .txt · 支持文件夹 · 拖多个自动打开批量面板</div>
+  </div>
+</div>
+</main>
+
+<div class="toast" id="toast"></div>
+<script src="libs/highlight.min.js"></script>
+<script src="libs/marked.min.js"></script>
+<script src="libs/html2canvas.min.js"></script>
+<script src="libs/jspdf.umd.min.js"></script>
+<script src="libs/jszip.min.js"></script>
+<script src="libs/turndown.js"></script>
+<script src="libs/turndown-gfm.js"></script>
+<script src="core.js"></script>
+</body>
+</html>
