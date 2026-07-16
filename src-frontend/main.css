@@ -894,7 +894,21 @@
     background: transparent !important;
     width: 0 !important;
     height: 0 !important;
-    margin: 0 !important;
+        margin: 0 !important;
+  }
+  /* stage 主题豁免：把 counter 序号还原 */
+  #preview.stage h2::before {
+    content: counter(st-h2, decimal-leading-zero) !important;
+    display: inline-block !important;
+    background: none !important;
+    width: auto !important;
+    height: auto !important;
+    margin: 0 1.2em 0 0 !important;
+    color: var(--st-gold) !important;
+    font-family: Georgia, serif !important;
+    font-size: 0.5em !important;
+    font-weight: 400 !important;
+    letter-spacing: 0.15em !important;
   }
   /* 列表：完全去掉所有前置符号（圆点、方块、菱形、短横线全部消失） */
   #preview ul,
@@ -2272,3 +2286,593 @@ pre code#preview .hljs{display:block;overflow-x:auto;padding:1em}code#preview .h
     opacity: 1 !important;
   }
   #preview.antd-dark ol li::marker { color: #1668dc; font-weight: 500; }
+
+/* ============ Qwen 科技 · 薄荷双色 · 纯白卡片 ============ */
+  #preview.qwentech {
+    background: #ffffff;
+    color: #2a2a2a;
+    font-family: "PingFang SC", "Helvetica Neue", "Hiragino Sans GB", -apple-system, sans-serif;
+    line-height: 1.85;
+    padding: 48px 40px;
+  }
+  #preview.qwentech h1 {
+    font-size: 2.6em;
+    color: #0FB990;
+    text-align: center;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    margin: 0.2em 0 1em;
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+  #preview.qwentech h1::after { display: none; }
+  #preview.qwentech h2 {
+    font-size: 1.7em;
+    color: #101010;
+    font-weight: 700;
+    margin: 1.8em 0 0.8em;
+    padding: 0;
+    border: none;
+    letter-spacing: 0.01em;
+  }
+  #preview.qwentech h2::before { display: none; }
+  #preview.qwentech h3 {
+    font-size: 1.2em;
+    color: #0FB990;
+    font-weight: 600;
+    margin: 1.4em 0 0.6em;
+    border: none;
+    padding: 0;
+  }
+  #preview.qwentech h3::before { display: none; }
+
+  /* 所有块级内容 = 白色卡片 */
+
+  #preview.qwentech strong {
+    background: none;
+    color: #0FB990;
+    font-weight: 700;
+    border: none;
+    padding: 0;
+  }
+
+  #preview.qwentech a {
+    color: #0FB990;
+    border-bottom: 1px solid rgba(15,185,144,0.35);
+  }
+
+  #preview.qwentech blockquote {
+    color: #444;
+    border-left: none;
+    font-style: normal;
+  }
+  #preview.qwentech blockquote p { margin: 0; }
+
+  #preview.qwentech table {
+    border-collapse: collapse;
+    width: 100%;
+    background: #fff;
+  }
+  #preview.qwentech th {
+    background: #f8f8f8;
+    color: #101010;
+    font-weight: 700;
+    text-align: left;
+    padding: 14px 16px;
+    border: none;
+    border-bottom: 2px solid #0FB990;
+  }
+  #preview.qwentech td {
+    padding: 14px 16px;
+    border: none;
+    border-bottom: 1px solid #eee;
+    color: #2a2a2a;
+  }
+  #preview.qwentech tr:last-child td { border-bottom: none; }
+
+  #preview.qwentech code {
+    background: #f5f5f5;
+    color: #0FB990;
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: none;
+    font-size: 0.92em;
+  }
+  #preview.qwentech pre {
+    background: #101010;
+    color: #e6e6e6;
+    padding: 20px 24px;
+  }
+  #preview.qwentech pre code {
+    background: none;
+    color: #e6e6e6;
+    padding: 0;
+  }
+
+  #preview.qwentech hr {
+    background: none;
+    border: none;
+    height: auto;
+    text-align: center;
+    margin: 32px 0;
+  }
+  #preview.qwentech hr::after {
+    content: '';
+    display: block;
+    width: 60px;
+    height: 1px;
+    background: #0FB990;
+    margin: 0 auto;
+    opacity: 0.5;
+  }
+
+  /* ============================================================
+     舞台（暗色）· DeepSeek 视觉化风格 v2
+     ------------------------------------------------------------
+     完整移植 v3 HTML 的字体/配色/间距/动画。
+     - CSS counter 自动给 H2 标 01/02/03 金色序号
+     - blockquote → 机制卡（金色左边线 + 深底卡片）
+     - pre 代码块 → STAGE 卡片（内阴影金晕 + 右下 STAGE·NN 标签）
+     - 支持用户在 markdown 里直接塞 <svg> <style> raw HTML
+     - 滚动淡入动画（现代浏览器 animation-timeline: view()）
+     ============================================================ */
+  #preview.stage {
+    /* ==== v3 完整 CSS 变量集 ==== */
+    --st-bg: #0b0e14;
+    --st-bg-2: #12161f;
+    --st-stage: #1a1f2b;
+    --st-stage-glow: rgba(255, 204, 77, 0.04);
+    --st-ink: #eaf0f6;
+    --st-ink-dim: #7d8590;
+    --st-ink-mute: #545c66;
+    --st-gold: #ffcc4d;
+    --st-teal: #4ecdc4;
+    --st-coral: #ff6b6b;
+    --st-violet: #a78bfa;
+    --st-line: rgba(255, 255, 255, 0.07);
+
+    background: var(--st-bg);
+    color: var(--st-ink);
+    font-family: -apple-system, "PingFang SC", "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.75;
+    padding: 60px 48px 80px;
+    letter-spacing: 0.01em;
+    counter-reset: st-h2;
+    max-width: 900px;
+    margin: 0 auto;
+  }
+
+  /* ==== H1 · 主标题（宋体大字 + 金 accent + 细线分区） ==== */
+  #preview.stage h1 {
+    font-family: "Songti SC", "Source Han Serif SC", "STSong", serif;
+    font-size: 3.2rem;
+    font-weight: 400;
+    color: var(--st-ink);
+    letter-spacing: 0.04em;
+    line-height: 1.15;
+    margin: 0 0 24px;
+    padding: 0 0 40px;
+    border: none;
+    border-bottom: 1px solid var(--st-line);
+    text-align: left;
+  }
+  #preview.stage h1::before, #preview.stage h1::after { display: none; }
+  #preview.stage h1 strong,
+  #preview.stage h1 em {
+    color: var(--st-gold);
+    font-weight: 400;
+    font-style: normal;
+    background: none;
+  }
+
+  /* ==== H2 · 概念标题（自动 01/02/03 序号 + 大宋体） ==== */
+  #preview.stage h2 {
+    font-family: "Songti SC", "Source Han Serif SC", "STSong", serif;
+    font-size: 2.1rem;
+    font-weight: 400;
+    color: var(--st-ink);
+    letter-spacing: 0.03em;
+    line-height: 1.3;
+    margin: 3em 0 0.6em;
+    padding: 0;
+    border: none;
+    counter-increment: st-h2;
+    display: flex;
+    align-items: baseline;
+    gap: 22px;
+  }
+  #preview.stage h2::before {
+    content: counter(st-h2, decimal-leading-zero);
+    color: var(--st-gold);
+    font-family: Georgia, serif;
+    font-size: 0.5em;
+    font-weight: 400;
+    letter-spacing: 0.15em;
+    flex-shrink: 0;
+    background: none;
+    width: auto;
+    height: auto;
+    display: inline-block;
+  }
+  #preview.stage h2 strong,
+  #preview.stage h2 em {
+    color: var(--st-gold);
+    font-weight: 400;
+    font-style: normal;
+    background: none;
+  }
+
+  /* ==== H3 · 副标题（金色小宋体） ==== */
+  #preview.stage h3 {
+    font-family: "Songti SC", "Source Han Serif SC", serif;
+    font-size: 1.4rem;
+    font-weight: 400;
+    color: var(--st-gold);
+    margin: 1.8em 0 0.6em;
+    border: none;
+    padding: 0;
+    letter-spacing: 0.03em;
+  }
+  #preview.stage h3::before { display: none; }
+
+  #preview.stage h4, #preview.stage h5, #preview.stage h6 {
+    color: var(--st-ink);
+    font-weight: 500;
+    margin: 1.4em 0 0.5em;
+  }
+
+  /* ==== 段落（子标题下的 sub 用 blockquote 或 em 表达） ==== */
+  #preview.stage p {
+    color: var(--st-ink-dim);
+    margin: 0.9em 0 1.2em;
+    font-size: 1.02rem;
+    max-width: 720px;
+  }
+
+  /* ==== 强调 ==== */
+  #preview.stage strong {
+    color: var(--st-gold);
+    font-weight: 500;
+    background: none;
+    border: none;
+    padding: 0;
+  }
+  #preview.stage em {
+    color: var(--st-ink);
+    font-style: normal;
+    background: linear-gradient(180deg, transparent 60%, rgba(255, 204, 77, 0.22) 60%);
+    padding: 0 2px;
+  }
+
+  #preview.stage a {
+    color: var(--st-gold);
+    text-decoration: none;
+    border-bottom: 1px solid rgba(255, 204, 77, 0.35);
+    padding-bottom: 1px;
+    transition: border-color 0.2s;
+  }
+  #preview.stage a:hover { border-bottom-color: var(--st-gold); }
+
+  /* ==== blockquote = 机制卡片（金色左边线 + 深底圆角） ==== */
+  #preview.stage blockquote {
+    background: var(--st-bg-2);
+    border: none;
+    border-left: 3px solid var(--st-gold);
+    border-radius: 0 8px 8px 0;
+    color: var(--st-ink-dim);
+    padding: 18px 22px;
+    margin: 1.6em 0 2em;
+    font-style: normal;
+    font-size: 0.95rem;
+    line-height: 1.7;
+  }
+  #preview.stage blockquote p {
+    color: var(--st-ink-dim);
+    margin: 0.3em 0;
+    max-width: none;
+  }
+  #preview.stage blockquote p:first-child { margin-top: 0; }
+  #preview.stage blockquote p:last-child { margin-bottom: 0; }
+  #preview.stage blockquote strong {
+    color: var(--st-ink);
+    font-weight: 500;
+    background: none;
+  }
+  #preview.stage blockquote code {
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    font-size: 0.82em;
+    padding: 1px 6px;
+    background: rgba(255, 204, 77, 0.08);
+    border-radius: 3px;
+    color: var(--st-gold);
+    border: none;
+  }
+  #preview.stage blockquote::before, #preview.stage blockquote::after { display: none; }
+
+  /* ==== 列表 ==== */
+  #preview.stage ul, #preview.stage ol {
+    padding-left: 1.6em;
+    color: var(--st-ink-dim);
+    margin: 0.8em 0 1.4em;
+  }
+  #preview.stage ul li, #preview.stage ol li {
+    margin: 0.4em 0;
+    color: var(--st-ink-dim);
+  }
+  #preview.stage ul li::marker { color: rgba(255, 204, 77, 0.55); }
+  #preview.stage ol li::marker { color: var(--st-gold); font-family: Georgia, serif; font-weight: 400; }
+
+  /* ==== 行内 code ==== */
+  #preview.stage code {
+    background: var(--st-stage);
+    color: var(--st-teal);
+    padding: 2px 8px;
+    border-radius: 4px;
+    border: 1px solid rgba(78, 205, 196, 0.15);
+    font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
+    font-size: 0.9em;
+  }
+
+  /* ==== pre 代码块 = STAGE 卡片（v3 舞台风格） ==== */
+  #preview.stage {
+    counter-reset: st-h2 st-stage;
+  }
+  #preview.stage pre {
+    background: var(--st-stage);
+    border: 1px solid var(--st-line);
+    border-radius: 14px;
+    padding: 40px 32px 44px;
+    margin: 1.6em 0;
+    box-shadow: inset 0 0 100px var(--st-stage-glow);
+    position: relative;
+    overflow-x: auto;
+    counter-increment: st-stage;
+  }
+  /* 聚光灯 */
+  #preview.stage pre::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 20%, rgba(255, 204, 77, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+    border-radius: 14px;
+  }
+  /* STAGE · NN 标签 */
+  #preview.stage pre::after {
+    content: 'STAGE · ' counter(st-stage, decimal-leading-zero);
+    position: absolute;
+    bottom: 10px;
+    right: 20px;
+    color: var(--st-ink-mute);
+    font-size: 0.72rem;
+    letter-spacing: 0.2em;
+    font-family: "JetBrains Mono", "SF Mono", monospace;
+    pointer-events: none;
+  }
+  #preview.stage pre code {
+    background: none;
+    border: none;
+    color: var(--st-ink);
+    padding: 0;
+    font-size: 0.9em;
+    font-family: "JetBrains Mono", "SF Mono", Menlo, monospace;
+    position: relative;
+    z-index: 1;
+  }
+  #preview.stage pre code.hljs {
+    background: transparent !important;
+    padding: 0 !important;
+  }
+
+  /* ==== 表格 ==== */
+  #preview.stage table {
+    border-collapse: collapse;
+    width: 100%;
+    margin: 1.6em 0;
+    background: var(--st-bg-2);
+    border-radius: 10px;
+    overflow: hidden;
+    border: 1px solid var(--st-line);
+    font-size: 0.95rem;
+  }
+  #preview.stage th {
+    background: var(--st-stage);
+    color: var(--st-ink);
+    font-weight: 500;
+    text-align: left;
+    padding: 14px 20px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 204, 77, 0.4);
+    letter-spacing: 0.05em;
+  }
+  #preview.stage td {
+    padding: 13px 20px;
+    border: none;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+    color: var(--st-ink-dim);
+  }
+  #preview.stage tbody tr:last-child td { border-bottom: none; }
+  #preview.stage tbody tr:hover td { background: rgba(255, 204, 77, 0.03); }
+
+  /* ==== 分隔线 ==== */
+  #preview.stage hr {
+    background: none;
+    border: none;
+    height: auto;
+    text-align: center;
+    margin: 3.5em 0;
+  }
+  #preview.stage hr::after {
+    content: '';
+    display: block;
+    width: 48px;
+    height: 1px;
+    background: rgba(255, 204, 77, 0.4);
+    margin: 0 auto;
+  }
+
+  /* ==== 图片 ==== */
+  #preview.stage img {
+    max-width: 100%;
+    border-radius: 10px;
+    box-shadow: 0 6px 32px rgba(0, 0, 0, 0.4);
+    margin: 1em 0;
+    display: block;
+  }
+
+  /* ==== 用户内嵌 <svg>（marked 允许 raw HTML）自动获得舞台待遇 ==== */
+  #preview.stage svg {
+    max-width: 100%;
+    height: auto;
+    display: block;
+    margin: 1em auto;
+  }
+  /* 独立成段的 svg：直接给舞台外框 */
+  #preview.stage p > svg:only-child,
+  #preview.stage figure > svg,
+  #preview.stage div.stage-frame > svg {
+    background: var(--st-stage);
+    border-radius: 14px;
+    padding: 40px 30px;
+    box-shadow: inset 0 0 100px var(--st-stage-glow);
+    border: 1px solid var(--st-line);
+  }
+
+  /* 用户手动包 <div class="stage-frame"> ... </div> 时的舞台容器 */
+  #preview.stage .stage-frame {
+    background: var(--st-stage);
+    border-radius: 14px;
+    padding: 40px 30px;
+    margin: 1.6em 0;
+    position: relative;
+    overflow: hidden;
+    box-shadow: inset 0 0 100px var(--st-stage-glow);
+    border: 1px solid var(--st-line);
+    min-height: 260px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+  #preview.stage .stage-frame::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse at 50% 20%, rgba(255, 204, 77, 0.06) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  #preview.stage .stage-frame > * { position: relative; z-index: 1; }
+
+  /* ==== 任务清单：隐藏 checkbox 方框 ==== */
+  #preview.stage input[type="checkbox"] { display: none; }
+  #preview.stage li:has(> input[type="checkbox"][checked]) {
+    color: var(--st-ink-mute);
+    text-decoration: line-through;
+    text-decoration-color: var(--st-ink-mute);
+  }
+
+  /* ============================================================
+     滚动淡入动画（现代浏览器 animation-timeline: view()）
+     - 每个 h1/h2/pre/blockquote/table 进入视口时淡入上移
+     - 完全 CSS 无 JS，下载 HTML 后离线仍生效
+     - 不支持的旧浏览器直接显示（fallback 用 @supports）
+     ============================================================ */
+  @keyframes st-fade-in {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes st-glow-in {
+    from { opacity: 0; box-shadow: inset 0 0 0 var(--st-stage-glow); }
+    to   { opacity: 1; box-shadow: inset 0 0 100px var(--st-stage-glow); }
+  }
+
+  @supports (animation-timeline: view()) {
+    #preview.stage h1,
+    #preview.stage h2,
+    #preview.stage h3,
+    #preview.stage p,
+    #preview.stage ul,
+    #preview.stage ol,
+    #preview.stage table,
+    #preview.stage blockquote,
+    #preview.stage .stage-frame,
+    #preview.stage > svg,
+    #preview.stage figure {
+      animation: st-fade-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 40%;
+    }
+    #preview.stage pre {
+      animation: st-glow-in linear both;
+      animation-timeline: view();
+      animation-range: entry 0% entry 50%;
+    }
+  }
+
+  /* ==== 让 v3 原生动画 class（.exag-big / .bubble-left / .fusion 等）在这里也能用 ==== */
+  /* 用户 markdown 里塞 <svg><g class="exag-big">...</g></svg> 就能自动动起来 */
+  @keyframes st-bob-big {
+    0%, 100% { transform: translateY(0) scaleY(1) rotate(0deg); }
+    30%      { transform: translateY(-40px) scaleY(1.15) rotate(-8deg); }
+    60%      { transform: translateY(-25px) scaleY(0.95) rotate(6deg); }
+  }
+  @keyframes st-pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50%      { opacity: 0.6; transform: scale(1.08); }
+  }
+  @keyframes st-fly-right {
+    0%   { transform: translateX(-140px); opacity: 0; }
+    25%  { transform: translateX(-40px); opacity: 1; }
+    70%  { transform: translateX(-10px); opacity: 0; }
+    100% { transform: translateX(-140px); opacity: 0; }
+  }
+  @keyframes st-fly-left {
+    0%   { transform: translateX(140px); opacity: 0; }
+    25%  { transform: translateX(40px); opacity: 1; }
+    70%  { transform: translateX(10px); opacity: 0; }
+    100% { transform: translateX(140px); opacity: 0; }
+  }
+  @keyframes st-spark {
+    0%, 48% { opacity: 0; transform: scale(0.3); }
+    55%     { opacity: 1; transform: scale(1.6); }
+    70%     { opacity: 0; transform: scale(2.2); }
+    100%    { opacity: 0; }
+  }
+  #preview.stage .st-anim-bob   { animation: st-bob-big 2.4s ease-in-out infinite; transform-origin: center bottom; }
+  #preview.stage .st-anim-pulse { animation: st-pulse 2s ease-in-out infinite; transform-origin: center; }
+  #preview.stage .st-anim-fly-right { animation: st-fly-right 4s ease-in-out infinite; }
+  #preview.stage .st-anim-fly-left  { animation: st-fly-left  4s ease-in-out infinite; }
+  #preview.stage .st-anim-spark { animation: st-spark 4s ease-out infinite; transform-origin: center; }
+
+  /* 长文档下点击 stop-anim class 时暂停所有装饰动画 */
+  #preview.stage.no-anim *,
+  #preview.stage .no-anim * {
+    animation-play-state: paused !important;
+  }
+
+  /* ==== 响应式 ==== */
+  @media (max-width: 640px) {
+    #preview.stage { padding: 40px 20px 60px; }
+    #preview.stage h1 { font-size: 2.2rem; padding-bottom: 28px; }
+    #preview.stage h2 { font-size: 1.6rem; gap: 14px; }
+    #preview.stage h3 { font-size: 1.2rem; }
+    #preview.stage pre { padding: 28px 20px 32px; }
+    #preview.stage .stage-frame { padding: 28px 16px; }
+  }
+
+  /* ============================================================
+     stage 主题豁免层 · 覆盖上方全局 wipe 规则（!important）
+     - 全局 wipe 把所有主题的 blockquote/pre border-left/box-shadow
+       都强制清零，stage 主题需要金色左边线和内阴影金晕，必须在这里
+       用同等权重恢复。
+     - 全局 wipe 还删掉了 h2::before content，stage 已在上一节处理。
+     ============================================================ */
+  #preview.stage blockquote {
+    border-left: 3px solid var(--st-gold) !important;
+    border-left-width: 3px !important;
+    border-left-style: solid !important;
+    border-left-color: var(--st-gold) !important;
+  }
+  #preview.stage pre {
+    border: 1px solid var(--st-line) !important;
+    box-shadow: inset 0 0 100px var(--st-stage-glow) !important;
+  }

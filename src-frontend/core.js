@@ -284,8 +284,11 @@ function extractPreviewCSS() {
     try { sheetRules = sheet.cssRules; } catch(e) { continue; }
     for (const r of sheetRules) {
       const txt = r.cssText;
-      // 只保留跟 #preview 和 marked 相关的规则
-      if (/#preview|\.toast/.test(txt) === false) continue;
+      // 保留 #preview 相关规则 + 全局 @keyframes / @supports（供 stage 主题动画使用）
+      const isPreview = /#preview|\.toast/.test(txt);
+      const isAnim = /^@keyframes\s+(st-|hljs)/.test(txt)
+                     || /^@supports\s*\(animation-timeline/.test(txt);
+      if (!isPreview && !isAnim) continue;
       rules.push(txt);
     }
   }
@@ -295,6 +298,10 @@ function extractPreviewCSS() {
 function buildStandaloneHTML() {
   const themeClass = preview.className || '';
   const previewCSS = extractPreviewCSS();
+  const isDark = /\b(stage|dark|linear|antd-dark)\b/.test(themeClass);
+  const outerBg = isDark ? '#0b0e14' : '#ececef';
+  const pageBg = isDark ? 'transparent' : '#fff';
+  const pageShadow = isDark ? 'none' : '0 4px 32px rgba(0,0,0,0.08)';
   // 抓第一个 h1 作为标题
   const h1 = preview.querySelector('h1');
   const title = h1 ? h1.textContent.trim() : 'Markdown 导出';
@@ -309,15 +316,15 @@ function buildStandaloneHTML() {
 html, body {
   margin: 0;
   padding: 0;
-  background: #ececef;
+  background: ${outerBg};
   min-height: 100vh;
   font-family: -apple-system, "PingFang SC", "Helvetica Neue", sans-serif;
 }
 .page {
-  max-width: 820px;
+  max-width: 900px;
   margin: 40px auto;
-  background: #fff;
-  box-shadow: 0 4px 32px rgba(0,0,0,0.08);
+  background: ${pageBg};
+  box-shadow: ${pageShadow};
   border-radius: 10px;
   overflow: hidden;
 }
@@ -329,13 +336,20 @@ html, body {
   max-height: none !important;
   padding: 56px 64px 72px !important;
 }
+/* stage 主题：外层容器让位给主题自身的深色背景和内边距 */
+#preview.stage {
+  padding: 60px 48px 80px !important;
+  max-width: none !important;
+  margin: 0 !important;
+}
 ${previewCSS}
 @media (max-width: 640px) {
   .page { margin: 0; border-radius: 0; }
   #preview { padding: 32px 24px 48px !important; }
+  #preview.stage { padding: 40px 20px 60px !important; }
 }
 @media print {
-  body { background: #fff; }
+  body { background: ${isDark ? outerBg : '#fff'}; }
   .page { box-shadow: none; margin: 0; max-width: none; border-radius: 0; }
   #preview { padding: 20mm !important; }
 }
