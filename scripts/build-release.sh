@@ -107,6 +107,46 @@ if fails:
 fi
 echo ""
 
+# ─── 门禁 G（Grep zero-external）: 内嵌资源零外部引用 ───
+echo "[门禁 G] 零外部引用检查..."
+LEAK=$(grep -rnE "https?://|/opt/homebrew|/usr/local/Cellar" \
+  --include="*.html" --include="*.css" \
+  "$APP/Contents/Resources/" 2>/dev/null || true)
+if [ -n "$LEAK" ]; then
+  echo "  ✗ .app 内嵌资源有外链:"
+  echo "$LEAK" | head -10
+  exit 1
+fi
+# 源码 CDN 泄漏（HTML/CSS，不含 licenses 注释）
+CDN=$(grep -rnE "https?://" --include="*.html" --include="*.css" src-frontend/ 2>/dev/null \
+  | grep -vE "^[^:]+:[0-9]+:\s*<!--|/\*|//|xmlns|w3\.org" || true)
+if [ -n "$CDN" ]; then
+  echo "  ✗ src-frontend HTML/CSS 里有 http(s):// 引用:"
+  echo "$CDN" | head -5
+  exit 1
+fi
+# .app 二进制不能依赖 brew 动态库
+BREW_DEPS=$(otool -L "$APP/Contents/MacOS/markdownforge" 2>/dev/null \
+  | grep -E "/opt/homebrew|/usr/local/Cellar|/usr/local/opt" || true)
+if [ -n "$BREW_DEPS" ]; then
+  echo "  ✗ 主二进制依赖 brew:"
+  echo "$BREW_DEPS"
+  exit 1
+fi
+echo "  ✓ 零外部引用"
+echo ""
+
+# ─── 门禁 C（Codesign）: ad-hoc 签名 ───
+echo "[门禁 C] ad-hoc codesign（无证书自签）..."
+codesign --force --deep --sign - "$APP" 2>&1 | tail -3
+if codesign --verify --deep --strict "$APP" 2>&1; then
+  echo "  ✓ codesign 校验通过"
+else
+  echo "  ✗ codesign 校验失败"
+  exit 1
+fi
+echo ""
+
 # 2. 背景图
 echo "[2/4] 生成 DMG 背景图..."
 python3 scripts/gen-dmg-bg.py dmg-assets/dmg-bg.png
@@ -147,7 +187,7 @@ else
   fi
   DMG_PATH="dist-release/MarkdownForge-${VERSION}-macOS-AppleSilicon.dmg"
   DMG_SIZE=$([ -f "$DMG_PATH" ] && du -h "$DMG_PATH" | awk '{print $1}' || echo "?")
-  git tag -a "$TAG" -m "Release $TAG · E2E 10/10 通过 · DMG $DMG_SIZE" --quiet
+  git tag -a "$TAG" -m "Release $TAG · E2E 10/10 通过 · DMG $DMG_SIZE"
   echo "  ✓ tag: $TAG"
   echo ""
   echo "  ─── 回滚: git checkout $TAG"
